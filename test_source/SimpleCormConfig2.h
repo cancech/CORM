@@ -26,4 +26,10 @@ BEAN(double*, dblBean) {
 	return new double(1.111);
 }
 
+namespace testing {
+	BEAN(int, nsIntBean2) {
+		return 100;
+	}
+}
+
 #endif /* SIMPLECORMCONFIG2_H_ */

@@ -27,4 +27,10 @@ BEAN(std::string, strBean) {
 	return "This is the strBean";
 }
 
+namespace testing {
+	BEAN(int, nsIntBean1) {
+		return 1;
+	}
+}
+
 #endif /* SIMPLECORMCONFIG1_H_ */

@@ -7,10 +7,12 @@
 #include "SimpleCormConfig1.h"
 #include "SimpleCormConfig2.h"
 #include "SimpleCormAdder.h"
+#include "SimpleCormNsAdder.h"
 
 // Pull in the resources as globals (outside of class) for testing
 RESOURCE(int, intBean1);
 RESOURCE(int, intBean2);
+RESOURCE_NS(int, testing, nsIntBean1);
 
 BOOST_AUTO_TEST_SUITE(Simple_Corm_Test_Suite)
 
@@ -24,6 +26,9 @@ BOOST_AUTO_TEST_CASE(Test_Beans) {
 	// Check when pulled in using the function directly
 	BOOST_CHECK_EQUAL("This is the strBean", provide_strBean());
 	BOOST_CHECK_EQUAL(1.111, *provide_dblBean());
+	// Check beans that are in a namespace
+	BOOST_CHECK_EQUAL(1, nsIntBean1);
+	BOOST_CHECK_EQUAL(100, testing::provide_nsIntBean2());
 }
 
 /*
@@ -32,6 +37,15 @@ BOOST_AUTO_TEST_CASE(Test_Beans) {
 BOOST_AUTO_TEST_CASE(Test_Class_With_Member_Resources) {
 	SimpleCormAdder adder;
 	BOOST_CHECK_EQUAL(444, adder.add());
+}
+
+/*
+ * Test case to ensure that a class can pull in the member resources as expected,
+ * even when it is accessing beans from a namespace.
+ */
+BOOST_AUTO_TEST_CASE(Test_Class_With_Member_Namespace_Resources) {
+	SimpleCormNsAdder adder;
+	BOOST_CHECK_EQUAL(101, adder.add());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
