@@ -10,7 +10,7 @@
 #ifndef SIMPLECORMCONFIG2_H_
 #define SIMPLECORMCONFIG2_H_
 
-#include "SimpleCorm.h"
+#include "simple/SimpleCorm.h"
 
 /*
  * Provides intBean1 for testing

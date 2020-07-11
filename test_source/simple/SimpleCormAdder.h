@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "SimpleCorm.h"
+#include "simple/SimpleCorm.h"
 
 // The externs have to be here in order to allow compilation to complete.
 // Only way to remove this need is to create a separate CORM preprocessor

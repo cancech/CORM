@@ -4,10 +4,10 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "SimpleCormConfig1.h"
-#include "SimpleCormConfig2.h"
-#include "SimpleCormAdder.h"
-#include "SimpleCormNsAdder.h"
+#include "simple/SimpleCormConfig1.h"
+#include "simple/SimpleCormConfig2.h"
+#include "simple/SimpleCormAdder.h"
+#include "simple/SimpleCormNsAdder.h"
 
 // Pull in the resources as globals (outside of class) for testing
 RESOURCE(int, intBean1);

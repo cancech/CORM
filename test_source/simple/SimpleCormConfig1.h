@@ -10,7 +10,7 @@
 #ifndef SIMPLECORMCONFIG1_H_
 #define SIMPLECORMCONFIG1_H_
 
-#include "SimpleCorm.h"
+#include "simple/SimpleCorm.h"
 #include <string>
 
 /*
