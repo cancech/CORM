@@ -60,16 +60,18 @@ public:
 	 *
 	 * @param name std::string the name of the bean to register
 	 *
-	 * @throws InvalidBeanNameException if a bean by that name already exists
+	 * @throws InvalidBeanNameException if a bean by that name already exists, or if the bean name is empty
 	 */
 	template<typename Type, class Creator = SingletonBeanCreator<Type>>
 	void registerBean(std::string name) {
-		if (name.empty())
-			throw InvalidBeanNameException(name, "bean name cannot be empty");
-		else if (containsBean(name))
-			throw InvalidBeanNameException(name, "bean is already registered");
+		verifyCanAddBean(name);
+		repo[name] = new BeanCreatorProvider<Type, Creator>();
+	}
 
-		repo[name] = new BeanProvider<Type, Creator>();
+	template<typename Type>
+	void registerBeanInstance(std::string name, Type instance) {
+		verifyCanAddBean(name);
+		repo[name] = new BeanInstanceProvider<Type>(instance);
 	}
 
 	/*
@@ -125,6 +127,20 @@ private:
 	bool containsBean(std::string name) {
 		return repo.count(name);
 	}
+
+	/*
+	 * Convenience method to check if a bean of the given name can be added to the manager.
+	 *
+	 * @param name std::string the name of the bean to check
+	 *
+	 * @throws InvalidBeanNameException if a bean by that name already exists, or if the bean name is empty
+	 */
+	void verifyCanAddBean(std::string name) {
+		if (name.empty())
+			throw InvalidBeanNameException(name, "bean name cannot be empty");
+		else if (containsBean(name))
+			throw InvalidBeanNameException(name, "bean is already registered");
+	}
 };
 
 /*
@@ -142,6 +158,14 @@ void setAutoRegister(bool value) {
 template<typename T, class U = SingletonBeanCreator<T>>
 void registerBean(std::string name) {
 	BeanManager::instance()->registerBean<T, U>(name);
+}
+
+/*
+ * Convenience function for registering bean instances with the manager.
+ */
+template<typename T>
+void registerBeanInstance(std::string name, T instance) {
+	BeanManager::instance()->registerBeanInstance<T>(name, instance);
 }
 
 /*

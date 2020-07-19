@@ -58,7 +58,7 @@ public:
 	 */
 	T getBean() {
 		// The expectation is that the subclass will populate the bean instance field within the initBean method
-		initBean();
+		provideBean();
 		return bean;
 	}
 
@@ -67,9 +67,9 @@ protected:
 	T bean;
 
 	/*
-	 * Initialize the bean and store it within the bean instance field.
+	 * Provide the bean by storing it within the bean instance field.
 	 */
-	virtual void initBean() = 0;
+	virtual void provideBean() = 0;
 };
 
 /*
@@ -78,17 +78,42 @@ protected:
  * of it from the BeanManager class.
  */
 template<typename T, class Creator>
-class BeanProvider: public TypeProvider<T> {
+class BeanCreatorProvider: public TypeProvider<T> {
 
 private:
 	// The creator for determining how to create bean instances
 	Creator creator;
 
 	/*
-	 * Initialize the bean, as per the creator, and store the resulting bean in the interim bean instance field container
+	 * The creator creates the bean and store the resulting bean in the interim bean instance field container
 	 */
-	void initBean() {
+	void provideBean() {
 		TypeProvider<T>::bean = creator.create();
+	}
+};
+
+/*
+ * Provides the instance that was given to the BeanInstanceProvider
+ */
+template<typename T>
+class BeanInstanceProvider: public TypeProvider<T> {
+public:
+	/*
+	 * Create the provider with the instance that is to be provided
+	 */
+	BeanInstanceProvider(T instance) :
+			m_instance(instance) {
+	}
+
+private:
+	// The instance passed to the provider
+	T m_instance;
+
+	/*
+	 * Provides the instance by passing it to interim bean instance field container
+	 */
+	void provideBean() {
+		TypeProvider<T>::bean = m_instance;
 	}
 };
 

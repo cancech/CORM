@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(Register_bean_with_no_name) {
 	try {
 		corm::registerBean<int>("");
 		BOOST_FAIL("Should not have been able to make it this far!");
-	} catch (corm::InvalidBeanNameException& e) {
+	} catch (corm::InvalidBeanNameException &e) {
 		// PASS: expect the second registration to trigger an exception
 	}
 }
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(Register_multiples_of_same_bean) {
 	try {
 		corm::registerBean<int>("multiple_of_same_bean");
 		BOOST_FAIL("Should not have been able to make it this far!");
-	} catch (corm::InvalidBeanNameException& e) {
+	} catch (corm::InvalidBeanNameException &e) {
 		// PASS: expect the second registration to trigger an exception
 	}
 
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(Retreive_bean_as_wrong_type) {
 	try {
 		corm::getBean<int>("test_for_type_check");
 		BOOST_FAIL("TYPE CONVERSION SHOULD HAVE FAILED BY NOW");
-	} catch (corm::InvalidBeanTypeException& e) {
+	} catch (corm::InvalidBeanTypeException &e) {
 		// Expect the bean retrieval to fail
 	}
 }
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(Retreive_bean_not_yet_registered) {
 	try {
 		corm::getBean<boost::any>("this_bean_does_not_exist");
 		BOOST_FAIL("SHOULD NOT BE ABLE TO RETRIEVE A BEAN");
-	} catch (corm::InvalidBeanNameException& e) {
+	} catch (corm::InvalidBeanNameException &e) {
 		// Expect the bean retrieval to fail
 	}
 }
@@ -77,13 +77,13 @@ BOOST_AUTO_TEST_CASE(Auto_Register_Creates_The_Bean) {
 	try {
 		corm::getBean<boost::any>("auto_registered_bean");
 		BOOST_FAIL("SHOULD NOT BE ABLE TO RETRIEVE A BEAN");
-	} catch (corm::InvalidBeanNameException& e) {
+	} catch (corm::InvalidBeanNameException &e) {
 		// Expect the bean retrieval to fail
 	}
 
 	// Enable auto registration
 	corm::setAutoRegister(true);
-	DummyClass* autoBean = corm::getBean<DummyClass*>("auto_registered_bean");
+	DummyClass *autoBean = corm::getBean<DummyClass*>("auto_registered_bean");
 	BOOST_CHECK_EQUAL(0, autoBean->getValue());
 	// Update the value of the bean
 	autoBean->setValue(13579);
@@ -99,9 +99,27 @@ BOOST_AUTO_TEST_CASE(Auto_Register_Creates_The_Bean) {
 	try {
 		corm::getBean<boost::any>("some_other_bean_that_doesn't_exist_yet");
 		BOOST_FAIL("SHOULD NOT BE ABLE TO RETRIEVE A BEAN");
-	} catch (corm::InvalidBeanNameException& e) {
+	} catch (corm::InvalidBeanNameException &e) {
 		// Expect the bean retrieval to fail
 	}
+}
+
+BOOST_AUTO_TEST_CASE(Bean_instance_scalar) {
+	DummyClass instance(101);
+	corm::registerBeanInstance<DummyClass>("no_instance_scalar", instance);
+
+	DummyClass bean = corm::getBean<DummyClass>("no_instance_scalar");
+	BOOST_CHECK_EQUAL(instance.getValue(), bean.getValue());
+	BOOST_CHECK(&instance != &bean);
+}
+
+BOOST_AUTO_TEST_CASE(Bean_without_instance_ptr) {
+	DummyClass* instance = new DummyClass(202);
+	corm::registerBeanInstance<DummyClass*>("no_instance_ptr", instance);
+
+	DummyClass* bean = corm::getBean<DummyClass*>("no_instance_ptr");
+	BOOST_CHECK_EQUAL(instance->getValue(), bean->getValue());
+	BOOST_CHECK_EQUAL(instance, bean);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
