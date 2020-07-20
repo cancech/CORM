@@ -11,8 +11,6 @@
 #include <string>
 #include <map>
 
-#include <boost/any.hpp>
-
 #include "BeanProvider.h"
 #include "exception/InvalidBeanException.h"
 
