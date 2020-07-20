@@ -59,21 +59,29 @@ public:
 	T getBean() {
 		// The expectation is that the subclass will populate the bean instance field within the initBean method
 		provideBean();
+
+		// Bit of a roundabout way to do this, but required in order to get around the limitations of C++.
+		// Retrieve the bean from the interim ValueWrapper, and make sure that the ValueWrapper is deallocated
+		// to avoid leaking memory.
+		T bean = beanWrapper->value;
+		delete(beanWrapper);
+		beanWrapper = NULL;
 		return bean;
 	}
 
 protected:
 	// This is an interim storage vehicle where the bean created by the subclass is to be stored.
-	T bean;
+	ValueWrapper<T>* beanWrapper = NULL;
 
 	/*
-	 * Provide the bean by storing it within the bean instance field.
+	 * Provide the bean by storing it within the interim ValueWrapper beanWrapper. Note that this *must* be allocated
+	 * via new, as getBean will be cleaning up this memory after it has retrieved the wrapper value.
 	 */
 	virtual void provideBean() = 0;
 };
 
 /*
- * Provides the bean that the Creator creates. This class primarily exists to make
+ * Provides the beanWrapper that the Creator creates. This class primarily exists to make
  * the relationship between the Bean and Creator explicitly clear, and hide the details
  * of it from the BeanManager class.
  */
@@ -85,10 +93,10 @@ private:
 	Creator creator;
 
 	/*
-	 * The creator creates the bean and store the resulting bean in the interim bean instance field container
+	 * The creator creates the beanWrapper and store the resulting beanWrapper in the interim beanWrapper instance field container
 	 */
 	void provideBean() {
-		TypeProvider<T>::bean = creator.create();
+		TypeProvider<T>::beanWrapper = creator.create();
 	}
 };
 
@@ -110,10 +118,10 @@ private:
 	T m_instance;
 
 	/*
-	 * Provides the instance by passing it to interim bean instance field container
+	 * Provides the instance by passing it to interim beanWrapper instance field container
 	 */
 	void provideBean() {
-		TypeProvider<T>::bean = m_instance;
+		TypeProvider<T>::beanWrapper = new ValueWrapper<T>(m_instance);
 	}
 };
 

@@ -11,37 +11,70 @@
 namespace corm {
 
 /*
- * Bean creator where a singleton scalar instance is used. Note that in order
- * for this instance to be a true singleton it must be loaded as a reference
- * on the client side (i.e.: T& t = creator.create()).
+ * Simple wrapper struct, which allow passing the created type from the BeanCreator
+ * to the BeanProvider without the bean provider being dependent on what type of
+ * value the creator is creating.
+ *
+ * This will wrap the value (whatever type it is) in a pointer, that can then easily
+ * be passed around.
  */
-template<class T>
-struct SingletonBeanCreator {
+template<typename T>
+struct ValueWrapper {
 
-	T& create() {
-		return instance;
+	T value;
+
+	ValueWrapper(T val) :
+			value(val) {
 	}
-
-private:
-	// The managed singleton instance
-	T instance;
 };
 
 /*
- * Bean creator where a singleton pointer instance is used.
+ * Singleton creator for a scalar.
+ *
+ * Note that a scalar singleton is an oxymoron, so this is
+ * not to be used (and left empty for normal usage). However, it is required to be implemented
+ * when the auto bean registration is enabled (will not compile otherwise if scalars are used
+ * anywhere). Therefore the implementation is provided to allow bean auto registration.
  */
-template<class T>
-struct SingletonBeanCreator<T*> {
-	T* create() {
-		if (instance == NULL)
-			instance = new T();
+template<typename T>
+struct SingletonBeanCreator {
+#ifdef ENABLE_BEAN_AUTOREGISTRATION
+	ValueWrapper<T>* create() {
+		return new ValueWrapper<T>(instance);
+	}
 
-		return instance;
+private:
+	T instance;
+#endif
+};
+
+/*
+ * Single creator for references
+ */
+template<typename T>
+struct SingletonBeanCreator<T&> {
+
+	ValueWrapper<T&>* create() {
+		return new ValueWrapper<T&>(instance);
 	}
 
 private:
 	// The managed singleton instance
-	T *instance = NULL;
+	T instance = T();
+};
+
+/*
+ * Single creator for pointers
+ */
+template<typename T>
+struct SingletonBeanCreator<T*> {
+	ValueWrapper<T*>* create() {
+		return new ValueWrapper<T*>(instance);
+	}
+
+private:
+	// The managed singleton instance
+	T *instance = new T();
 };
 
 /*
@@ -50,9 +83,16 @@ private:
  */
 template<class T>
 struct FactoryBeanCreator {
-	T create() {
-		return T();
+	ValueWrapper<T>* create() {
+		return new ValueWrapper<T>(T());
 	}
+};
+
+/*
+ * Intentionally left unimplemented, a factory that returns references does not make sense.
+ */
+template<typename T>
+struct FactoryBeanCreator<T&> {
 };
 
 /*
@@ -60,10 +100,10 @@ struct FactoryBeanCreator {
  * the instance is created via new, therefore the client code is responsible for memory
  * management.
  */
-template<class T>
+template<typename T>
 struct FactoryBeanCreator<T*> {
-	T* create() {
-		return new T();
+	ValueWrapper<T*>* create() {
+		return new ValueWrapper<T*>(new T());
 	}
 };
 

@@ -29,6 +29,8 @@ namespace corm {
  *        * All auto-registered beans will be singleton (the default creator for beans)
  *        * The bean which is to be "auto-registered" must have a default constructor (the bean will
  *        be created via its default constructor)
+ *
+ * To enable the auto-register capability, compile with the ENABLE_BEAN_AUTOREGISTRATION flag/symbol defined.
  */
 class BeanManager {
 
@@ -42,21 +44,14 @@ public:
 	}
 
 	/*
-	 * Enable/disable the auto registration capability of the manager.
-	 *
-	 * @param value bool true if auto registration is to be enabled.
-	 */
-	void setAutoRegister(bool value) {
-		autoRegister = value;
-	}
-
-	/*
 	 * Register a bean with the manager. The bean will rely on the specified creator for
 	 * bean management/creation.
 	 *
 	 * @template Type the type of the bean which is to be registered
 	 * @template Creator the creator which is to be used to instantiate/manage the bean
-	 *           defaults to SingletonBeanCreator
+	 *           defaults to SingletonBeanCreator. The Creator must provide a method
+	 *           matching the signature of: ValueWrapper<T>* create(), where the returned
+	 *           wrapper is allocated in dynamic memory (i.e.: created via new).
 	 *
 	 * @param name std::string the name of the bean to register
 	 *
@@ -68,6 +63,20 @@ public:
 		repo[name] = new BeanCreatorProvider<Type, Creator>();
 	}
 
+	/*
+	 * Register a specific instance as a bean under the indicated name. The behavior of this will depend
+	 * based on what type the instance is. A reference or pointer will be treated as a singleton, while
+	 * a scalar will be as a factory. Note, that the manager is not responsible for the memory allocated
+	 * to the instance, meaning if it is freed (i.e.: manually, or due to reference going out of scope)
+	 * undefined behavior can be expected.
+	 *
+	 * @template Type the type of the bean which is to be registered
+	 *
+	 * @param name std::string the name of the bean to register
+	 * @param instance Type the bean instance to register
+	 *
+	 * @throws InvalidBeanNameException if a bean by that name already exists, or if the bean name is empty
+	 */
 	template<typename Type>
 	void registerBeanInstance(std::string name, Type instance) {
 		verifyCanAddBean(name);
@@ -92,10 +101,11 @@ public:
 	template<typename Type>
 	Type getBean(std::string name) {
 		if (!containsBean(name)) {
-			if (autoRegister)
-				registerBean<Type>(name);
-			else
-				throw InvalidBeanNameException(name, "no bean of that name available");
+#ifdef ENABLE_BEAN_AUTOREGISTRATION
+			registerBean<Type>(name);
+#else
+			throw InvalidBeanNameException(name, "no bean of that name available");
+#endif
 		}
 
 		BaseProvider *baseProvider = repo[name];
@@ -107,16 +117,6 @@ public:
 		throw InvalidBeanTypeException(name, typeid(Type).name(), baseProvider->getType());
 	}
 
-private:
-	// Repository of all registered beans
-	std::map<std::string, BaseProvider*> repo;
-	// Flag for whether missing beans should automatically be registered
-	bool autoRegister = false;
-
-	// CTOR and DTOR are hidden due to singleton
-	BeanManager() = default;
-	~BeanManager() = default;
-
 	/*
 	 * Convenience method to check if a bean of the given name is already registered.
 	 *
@@ -127,6 +127,14 @@ private:
 	bool containsBean(std::string name) {
 		return repo.count(name);
 	}
+
+private:
+	// Repository of all registered beans
+	std::map<std::string, BaseProvider*> repo;
+
+	// CTOR and DTOR are hidden due to singleton
+	BeanManager() = default;
+	~BeanManager() = default;
 
 	/*
 	 * Convenience method to check if a bean of the given name can be added to the manager.
@@ -142,15 +150,6 @@ private:
 			throw InvalidBeanNameException(name, "bean is already registered");
 	}
 };
-
-/*
- * Convenience function which updates the auto registration of the BeanManager
- *
- * @param value bool true if auto registration is to be enabled.
- */
-void setAutoRegister(bool value) {
-	BeanManager::instance()->setAutoRegister(value);
-}
 
 /*
  * Convenience function for registering beans with the manager.
