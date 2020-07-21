@@ -69,12 +69,16 @@ private:
 template<typename T>
 struct SingletonBeanCreator<T*> {
 	ValueWrapper<T*>* create() {
+		// Delay creation until it is actually needed
+		if (instance == NULL)
+			instance = new T();
+
 		return new ValueWrapper<T*>(instance);
 	}
 
 private:
 	// The managed singleton instance
-	T *instance = new T();
+	T *instance = NULL;
 };
 
 /*

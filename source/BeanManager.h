@@ -10,6 +10,8 @@
 
 #include <string>
 #include <map>
+#include <vector>
+#include <algorithm>
 
 #include "BeanProvider.h"
 #include "exception/InvalidBeanException.h"
@@ -106,12 +108,24 @@ public:
 #endif
 		}
 
+		// check for cycles
+		bool hasCycle = std::find(beanNameStack.begin(), beanNameStack.end(), name) != beanNameStack.end();
+		beanNameStack.push_back(name);
+		if (hasCycle)
+			throw BeanDependencyCycleExceptionCreator(beanNameStack);
+
 		BaseProvider *baseProvider = repo[name];
 		TypeProvider<Type> *typeProvider = dynamic_cast<TypeProvider<Type>*>(baseProvider);
 
-		if (typeProvider)
-			return typeProvider->getBean();
+		if (typeProvider) {
+			Type beanToReturn = typeProvider->getBean();
+			// Only pop the bean from the list if it has been retrieved
+			beanNameStack.pop_back();
+			return beanToReturn;
+		}
 
+		// Do not hold on to invalid bean names in the call stack
+		beanNameStack.pop_back();
 		throw InvalidBeanTypeException(name, typeid(Type).name(), baseProvider->getType());
 	}
 
@@ -129,6 +143,8 @@ public:
 private:
 	// Repository of all registered beans
 	std::map<std::string, BaseProvider*> repo;
+	// Stack for "getBean" calls when there is a chained situation. Used to detect cycles
+	std::vector<std::string> beanNameStack;
 
 	// CTOR and DTOR are hidden due to singleton
 	BeanManager() = default;

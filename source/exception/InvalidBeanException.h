@@ -12,17 +12,17 @@
 #include <boost/stacktrace.hpp>
 #include <boost/exception/all.hpp>
 #include <typeinfo>
+#include <vector>
+#include <iostream>
 
 typedef boost::error_info<struct tag_stacktrace, boost::stacktrace::stacktrace> traced;
-
 
 namespace corm {
 
 // TODO see if this does what I want it to do, in terms of throwing an exception with a stack trace
-template <class E>
-void throw_with_trace(const E& e) {
-    throw boost::enable_error_info(e)
-        << traced(boost::stacktrace::stacktrace());
+template<class E>
+void throw_with_trace(const E &e) {
+	throw boost::enable_error_info(e) << traced(boost::stacktrace::stacktrace());
 }
 
 /*
@@ -30,19 +30,51 @@ void throw_with_trace(const E& e) {
  *      * registering a bean with a name that already exists
  *      * retrieving a bean that has not yet been registered
  */
-struct InvalidBeanNameException : public std::runtime_error {
+struct InvalidBeanNameException: public std::runtime_error {
 	InvalidBeanNameException(std::string name, std::string reason) :
-		std::runtime_error("Invalid bean name \"" + name + "\": " + reason) {}
+			std::runtime_error("Invalid bean name \"" + name + "\": " + reason) {
+	}
 };
 
 /*
  * Exception which is to be throw when attempting to retrieve a bean which is of a different type than
  * what is desired (i.e.: register bean is Foo, but trying to retrieve Bar).
  */
-struct InvalidBeanTypeException : public std::runtime_error {
-	InvalidBeanTypeException(std::string name, std::string wanted, std::string actual):
-		std::runtime_error("Invalid bean type for \"" + name +"\": wanted " + wanted + " but was " + actual) {}
+struct InvalidBeanTypeException: public std::runtime_error {
+	InvalidBeanTypeException(std::string name, std::string wanted, std::string actual) :
+			std::runtime_error("Invalid bean type for \"" + name + "\": wanted " + wanted + " but was " + actual) {
+	}
 };
+
+/*
+ * Exception which is thrown when attempting to get a bean which exists within a dependency cycle (i.e.: BeanA depends on
+ * BeanB, which depends on BeanA). Note that the cycleBeans parameter is expected to list the full list of the beans that
+ * are in the cycle, to allow for easier debugging, and the BeanDependencyCycleExceptionCreator function exists to facilite
+ * the generation of that text. It is recommended that BeanDependencyCycleExceptionCreator is used to create this exception
+ * with the proper cycleBeans text.
+ */
+struct BeanDependencyCycleException: public std::runtime_error {
+	BeanDependencyCycleException(std::string cycleBeans): std::runtime_error("Dependency cycle detected [" +
+			cycleBeans + "]") {
+
+	}
+};
+
+/*
+ * Helper for converting a vector of bean names in a cycle to a string that can then be used in the exception.
+ */
+BeanDependencyCycleException BeanDependencyCycleExceptionCreator(std::vector<std::string> cycle) {
+	std::string cycleAsStr = "";
+
+	for (uint i = 0; i < cycle.size(); i++) {
+		cycleAsStr += cycle.at(i);
+
+		if (i < (cycle.size() - 1))
+			cycleAsStr += ", ";
+	}
+
+	return BeanDependencyCycleException(cycleAsStr);
+}
 
 }
 

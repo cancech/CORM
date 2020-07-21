@@ -20,6 +20,18 @@ struct BeanManagerTestCreator {
 	}
 };
 
+// Classes to be used to test the cycle detection capabilities
+class A_depends_on_B;
+class B_depends_on_A;
+
+class A_depends_on_B {
+	B_depends_on_A* b = corm::getBean<B_depends_on_A*>("B_depends_on_A");
+};
+
+class B_depends_on_A {
+	A_depends_on_B* a = corm::getBean<A_depends_on_B*>("A_depends_on_B");
+};
+
 BOOST_AUTO_TEST_SUITE(BeanManager_Test_Suite)
 
 BOOST_AUTO_TEST_CASE(Register_bean_with_no_name) {
@@ -151,6 +163,26 @@ BOOST_AUTO_TEST_CASE(Bean_instance_pointer) {
 	DummyClass* bean = corm::getBean<DummyClass*>("instance_pointer");
 	BOOST_CHECK_EQUAL(instance->getValue(), bean->getValue());
 	BOOST_CHECK_EQUAL(instance, bean);
+}
+
+BOOST_AUTO_TEST_CASE(Check_for_Cyclic_Bean_Dependencies) {
+	// Register the two beans (will not get created until requested)
+	corm::registerBean<A_depends_on_B*>("A_depends_on_B");
+	corm::registerBean<B_depends_on_A*>("B_depends_on_A");
+
+	try {
+		corm::getBean<A_depends_on_B*>("A_depends_on_B");
+		BOOST_FAIL("The creation of the bean should fail due to a dependency cycle being present");
+	} catch (corm::BeanDependencyCycleException& e) {
+		// Expect the exception to be thrown
+	}
+
+	try {
+		corm::getBean<B_depends_on_A*>("B_depends_on_A");
+		BOOST_FAIL("The creation of the bean should fail due to a dependency cycle being present");
+	} catch (corm::BeanDependencyCycleException& e) {
+		// Expect the exception to be thrown
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()
