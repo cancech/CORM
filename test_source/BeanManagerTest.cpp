@@ -35,12 +35,7 @@ class B_depends_on_A {
 BOOST_AUTO_TEST_SUITE(BeanManager_Test_Suite)
 
 BOOST_AUTO_TEST_CASE(Register_bean_with_no_name) {
-	try {
-		corm::registerBean<int&>("");
-		BOOST_FAIL("Should not have been able to make it this far!");
-	} catch (corm::InvalidBeanNameException &e) {
-		// PASS: expect the second registration to trigger an exception
-	}
+	BOOST_REQUIRE_THROW(corm::registerBean<int&>(""), corm::InvalidBeanNameException);
 }
 
 BOOST_AUTO_TEST_CASE(Register_singleton_reference) {
@@ -88,12 +83,7 @@ BOOST_AUTO_TEST_CASE(Register_multiples_of_same_bean) {
 	DummyClass bean = corm::getBean<DummyClass>("multiple_of_same_bean");
 	BOOST_CHECK_EQUAL(135, bean.getValue());
 
-	try {
-		corm::registerBean<int*>("multiple_of_same_bean");
-		BOOST_FAIL("Should not have been able to make it this far!");
-	} catch (corm::InvalidBeanNameException &e) {
-		// PASS: expect the second registration to trigger an exception
-	}
+	BOOST_REQUIRE_THROW(corm::registerBean<int*>("multiple_of_same_bean"), corm::InvalidBeanNameException);
 
 	// Verify that the original bean is still there
 	DummyClass bean2 = corm::getBean<DummyClass>("multiple_of_same_bean");
@@ -106,12 +96,7 @@ BOOST_AUTO_TEST_CASE(Retreive_bean_as_wrong_type) {
 	DummyClass bean = corm::getBean<DummyClass&>("test_for_type_check");
 	BOOST_CHECK_EQUAL(0, bean.getValue());
 
-	try {
-		corm::getBean<int>("test_for_type_check");
-		BOOST_FAIL("TYPE CONVERSION SHOULD HAVE FAILED BY NOW");
-	} catch (corm::InvalidBeanTypeException &e) {
-		// Expect the bean retrieval to fail
-	}
+	BOOST_REQUIRE_THROW(corm::getBean<int>("test_for_type_check"), corm::InvalidBeanTypeException);
 }
 
 BOOST_AUTO_TEST_CASE(Retreive_bean_not_yet_registered) {
@@ -129,12 +114,7 @@ BOOST_AUTO_TEST_CASE(Retreive_bean_not_yet_registered) {
 	BOOST_CHECK_EQUAL(13579, otherPtr->getValue());
 	BOOST_CHECK_EQUAL(autoBean, otherPtr);
 #else
-	try {
-		corm::getBean<boost::any>("this_bean_does_not_exist");
-		BOOST_FAIL("SHOULD NOT BE ABLE TO RETRIEVE A BEAN");
-	} catch (corm::InvalidBeanNameException &e) {
-		// Expect the bean retrieval to fail
-	}
+	BOOST_REQUIRE_THROW(corm::getBean<boost::any>("this_bean_does_not_exist"), corm::InvalidBeanNameException);
 #endif
 }
 
@@ -170,19 +150,8 @@ BOOST_AUTO_TEST_CASE(Check_for_Cyclic_Bean_Dependencies) {
 	corm::registerBean<A_depends_on_B*>("A_depends_on_B");
 	corm::registerBean<B_depends_on_A*>("B_depends_on_A");
 
-	try {
-		corm::getBean<A_depends_on_B*>("A_depends_on_B");
-		BOOST_FAIL("The creation of the bean should fail due to a dependency cycle being present");
-	} catch (corm::BeanDependencyCycleException& e) {
-		// Expect the exception to be thrown
-	}
-
-	try {
-		corm::getBean<B_depends_on_A*>("B_depends_on_A");
-		BOOST_FAIL("The creation of the bean should fail due to a dependency cycle being present");
-	} catch (corm::BeanDependencyCycleException& e) {
-		// Expect the exception to be thrown
-	}
+	BOOST_REQUIRE_THROW(corm::getBean<A_depends_on_B*>("A_depends_on_B"), corm::BeanDependencyCycleException);
+	BOOST_REQUIRE_THROW(corm::getBean<B_depends_on_A*>("B_depends_on_A"), corm::BeanDependencyCycleException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
