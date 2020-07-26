@@ -11,7 +11,6 @@
 #include <exception>
 #include <boost/stacktrace.hpp>
 #include <boost/exception/all.hpp>
-#include <typeinfo>
 #include <vector>
 #include <iostream>
 
@@ -48,33 +47,18 @@ struct InvalidBeanTypeException: public std::runtime_error {
 
 /*
  * Exception which is thrown when attempting to get a bean which exists within a dependency cycle (i.e.: BeanA depends on
- * BeanB, which depends on BeanA). Note that the cycleBeans parameter is expected to list the full list of the beans that
- * are in the cycle, to allow for easier debugging, and the BeanDependencyCycleExceptionCreator function exists to facilite
- * the generation of that text. It is recommended that BeanDependencyCycleExceptionCreator is used to create this exception
- * with the proper cycleBeans text.
+ * BeanB, which depends on BeanA).
  */
 struct BeanDependencyCycleException: public std::runtime_error {
-	BeanDependencyCycleException(std::string cycleBeans): std::runtime_error("Dependency cycle detected [" +
-			cycleBeans + "]") {
-
-	}
+	BeanDependencyCycleException(std::vector<std::string>& cycle);
 };
 
 /*
- * Helper for converting a vector of bean names in a cycle to a string that can then be used in the exception.
+ * Exception which is thrown when attempting to create a configuration while it is still waiting on resources.
  */
-BeanDependencyCycleException BeanDependencyCycleExceptionCreator(std::vector<std::string> cycle) {
-	std::string cycleAsStr = "";
-
-	for (uint i = 0; i < cycle.size(); i++) {
-		cycleAsStr += cycle.at(i);
-
-		if (i < (cycle.size() - 1))
-			cycleAsStr += ", ";
-	}
-
-	return BeanDependencyCycleException(cycleAsStr);
-}
+struct ConfigurationMissingResourcesException: public std::runtime_error {
+	ConfigurationMissingResourcesException(std::string configName, std::vector<std::string>& missing);
+};
 
 }
 
