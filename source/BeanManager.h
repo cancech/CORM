@@ -12,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <typeinfo>
 
 #include "BeanProvider.h"
 #include "exception/InvalidBeanException.h"
@@ -112,7 +113,7 @@ public:
 		bool hasCycle = std::find(beanNameStack.begin(), beanNameStack.end(), name) != beanNameStack.end();
 		beanNameStack.push_back(name);
 		if (hasCycle)
-			throw BeanDependencyCycleExceptionCreator(beanNameStack);
+			throw BeanDependencyCycleException(beanNameStack);
 
 		BaseProvider *baseProvider = repo[name];
 		TypeProvider<Type> *typeProvider = dynamic_cast<TypeProvider<Type>*>(baseProvider);
