@@ -76,23 +76,26 @@ private:
 class BaseConfiguration {
 
 public:
-	/*
-	 * Creates the configuration, trigger the postContruct and provides all beans automatically.
-	 */
-	BaseConfiguration() {
-		postConstruct();
-		provideBeans();
-	}
-
+	// CTOR
+	BaseConfiguration() = default;
 	// DTOR
 	virtual ~BaseConfiguration() = default;
+
+	/*
+	 * Initialize the configuration, triggers the postInit and provideBeans methods (in that
+	 * order).
+	 */
+	void initialize() {
+		postInit();
+		provideBeans();
+	}
 
 protected:
 	/*
 	 * Called after the configuration has been created, to allow steps to be taken once all required
 	 * resources become available.
 	 */
-	virtual void postConstruct() {}
+	virtual void postInit() {}
 
 	/*
 	 * Called after postContruct completes, to allow the configuration to provide any/all beans.

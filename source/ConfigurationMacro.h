@@ -29,7 +29,7 @@ void corm::ConfigurationWrapper<Config>::registerResources() { \
  * Macro which ends the definition of a configuration file (and finalized the ConfigurationWrapper without any
  * registered resources), for situations where there is a configuration file that does not require any resources.
  */
-#define NO_RESOURCE_CONFIGURATION_END(Config) \
+#define CONFIGURATION_END_NO_RESOURCE(Config) \
 }; \
 CONFIGURATION_WRAPPER_REGISTER_RESOURCES_DECL(Config) \
 }
