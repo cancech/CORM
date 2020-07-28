@@ -5,8 +5,10 @@
  *      Author: Jaroslav Bosak
  */
 #include "InvalidBeanException.h"
+#include "Configuration.h"
 
 #include <sstream>
+
 
 namespace corm {
 
@@ -21,8 +23,9 @@ namespace corm {
  * @return std::string the string representation of the vector
  */
 template<typename T>
-std::string vectorAsString(std::vector<T>& v) {
-	std::stringstream ss("[");
+std::string vectorAsString(const std::vector<T>& v) {
+	std::stringstream ss;
+	ss << "[";
 
 	for (uint i = 0; i < v.size(); i++) {
 		ss << v.at(i);
@@ -51,4 +54,16 @@ ConfigurationMissingResourcesException::ConfigurationMissingResourcesException(s
 
 }
 
+/*
+ * Constructor that converts the vector of unfulfilled ConfigurationWrapperInterface to string
+ */
+ConfigurationInitializationException::ConfigurationInitializationException(std::vector<ConfigurationWrapperInterface*>& wrappers):
+	std::runtime_error("Unable to initialize configurations: " + vectorAsString(wrappers)){
+}
+
+}
+
+std::ostream& operator<<(std::ostream& os, const corm::ConfigurationWrapperInterface* w) {
+	os << w->getName() << " is missing resources " << corm::vectorAsString(w->getWaitingResources());
+	return os;
 }

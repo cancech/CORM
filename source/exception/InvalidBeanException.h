@@ -18,6 +18,8 @@ typedef boost::error_info<struct tag_stacktrace, boost::stacktrace::stacktrace> 
 
 namespace corm {
 
+class ConfigurationWrapperInterface;
+
 // TODO see if this does what I want it to do, in terms of throwing an exception with a stack trace
 template<class E>
 void throw_with_trace(const E &e) {
@@ -58,6 +60,13 @@ struct BeanDependencyCycleException: public std::runtime_error {
  */
 struct ConfigurationMissingResourcesException: public std::runtime_error {
 	ConfigurationMissingResourcesException(std::string configName, std::vector<std::string>& missing);
+};
+
+/*
+ * Exception which is thrown when an issue is encountered when attempting to initialize the configurations.
+ */
+struct ConfigurationInitializationException: public std::runtime_error {
+	ConfigurationInitializationException(std::vector<ConfigurationWrapperInterface*>& wrappers);
 };
 
 }

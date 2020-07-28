@@ -18,7 +18,7 @@
 #include "config/ConsumerTestConfig.h"
 
 
-BOOST_AUTO_TEST_SUITE(ConfigurationManager_Test_Suite)
+BOOST_AUTO_TEST_SUITE(Configuration_Test_Suite)
 
 
 BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
 	wrapper.registerResources();
 	BOOST_CHECK(wrapper.areResourcesSatisfied());
 
-	NoResourceTestConfig* config = wrapper.buildConfig();
+	NoResourceTestConfig* config = (NoResourceTestConfig*) wrapper.buildConfig();
 	BOOST_CHECK_EQUAL(0, config->numTimesPostConstructCalled);
 	BOOST_CHECK_EQUAL(0, config->numTimesProvideBeansCalled);
 	config->initialize();
@@ -52,17 +52,20 @@ BOOST_AUTO_TEST_CASE(Provider_and_Consumer) {
 	corm::ConfigurationWrapper<ProviderTestConfig> providerWrapper;
 	providerWrapper.registerResources();
 	BOOST_CHECK(providerWrapper.areResourcesSatisfied());
-	ProviderTestConfig* provider = providerWrapper.buildConfig();
+	ProviderTestConfig* provider = (ProviderTestConfig*) providerWrapper.buildConfig();
 	provider->initialize();
 
 	// Now can initialize the consumer
 	BOOST_CHECK(consumerWrapper.areResourcesSatisfied());
-	ConsumerTestConfig* consumer = consumerWrapper.buildConfig();
+	ConsumerTestConfig* consumer = (ConsumerTestConfig*) consumerWrapper.buildConfig();
 	consumer->initialize();
 
 	// Verify that the values are correct
 	BOOST_CHECK_EQUAL(provider->getSomeIntValuePtr(), consumer->getProviderSomeIntValue());
 	BOOST_CHECK_EQUAL(corm::getBean<DummyClass*>("providerDummyClassSingleton"), consumer->getProviderDummyClassSingleton());
+
+	delete(provider);
+	delete(consumer);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
