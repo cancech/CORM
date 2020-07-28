@@ -28,9 +28,7 @@ BOOST_AUTO_TEST_CASE(Single_Configuration_Missing_Resources) {
 
 BOOST_AUTO_TEST_CASE(Multiple_Configs) {
 	corm::ConfigurationAssembler manager;
-	manager.registerConfiguration<ConsumerManagerTestConfig>();
-	manager.registerConfiguration<ProviderConsumerManagerTestConfig>();
-	manager.registerConfiguration<ProviderManagerTestConfig>();
+	manager.registerConfiguration<ConsumerManagerTestConfig, ProviderConsumerManagerTestConfig, ProviderManagerTestConfig>();
 	manager.assemble();
 }
 

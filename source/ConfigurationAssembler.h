@@ -22,16 +22,14 @@ class ConfigurationAssembler {
 public:
 
 	/*
-	 * Register a single configuration
+	 * Register any number of configurations (minimum 1)
 	 *
-	 * @template the configuration class that is to be registered. This *must* extend corm::BaseConfiguration,
-	 * 			 and it must have a no-arg constructor. Recommendation is to use the provided macros.
+	 * @template list all configuration classes that are to be registered. Each *must* extend corm::BaseConfiguration,
+	 * 			 and must have a no-arg constructor. Recommendation is to use the provided macros.
 	 */
-	template<class Config>
+	template<class...allConfigs>
 	void registerConfiguration() {
-		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>();
-		c->registerResources();
-		waitingConfigs.push_back(c);
+		registerSingleConfiguration<allConfigs ...>();
 	}
 
 	/*
@@ -76,6 +74,28 @@ public:
 private:
 	// vector of configurations which are still waiting to be processed
 	std::vector<ConfigurationWrapperInterface*> waitingConfigs;
+
+	/*
+	 * Register a single configuration
+	 */
+	template<class Config>
+	void registerSingleConfiguration() {
+		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>();
+		c->registerResources();
+		waitingConfigs.push_back(c);
+	}
+
+	/*
+	 * Iterate through all of the configurations which are to be registered
+	 */
+	template<class Config, class Config2, class... moreConfigs>
+	void registerSingleConfiguration() {
+		// Register the first
+		registerSingleConfiguration<Config>();
+		// Iterate through the remaining ones
+		registerSingleConfiguration<Config2, moreConfigs...>();
+	}
+
 };
 
 }
