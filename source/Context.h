@@ -5,8 +5,8 @@
  *      Author: Jaroslav Bosak
  */
 
-#ifndef CONFIGURATIONASSEMBLER_H_
-#define CONFIGURATIONASSEMBLER_H_
+#ifndef CONTEXT_H_
+#define CONTEXT_H_
 
 #include <vector>
 #include "Configuration.h"
@@ -17,7 +17,7 @@ namespace corm {
  * Assembler for configurations, that will allow any number of configurations to be registered, and allow
  * them all to be assembled.
  */
-class ConfigurationAssembler {
+class Context {
 
 public:
 
@@ -96,4 +96,4 @@ private:
 
 }
 
-#endif /* CONFIGURATIONASSEMBLER_H_ */
+#endif /* CONTEXT_H_ */

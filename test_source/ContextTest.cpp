@@ -11,7 +11,7 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "ConfigurationAssembler.h"
+#include "../source/Context.h"
 
 #include "config/SingleConfigMissingResourcesTestConfig.h"
 #include "config/ProviderManagerTestConfig.h"
@@ -21,20 +21,20 @@
 BOOST_AUTO_TEST_SUITE(ConfigurationManager_Test_Suite)
 
 BOOST_AUTO_TEST_CASE(Single_Configuration_Missing_Resources) {
-	corm::ConfigurationAssembler manager;
-	manager.registerConfiguration<SingleConfigMissingResourcesTestConfig>();
-	BOOST_REQUIRE_THROW(manager.assemble(), corm::ConfigurationInitializationException);
+	corm::Context context;
+	context.registerConfiguration<SingleConfigMissingResourcesTestConfig>();
+	BOOST_REQUIRE_THROW(context.assemble(), corm::ConfigurationInitializationException);
 }
 
 BOOST_AUTO_TEST_CASE(Multiple_Configs) {
-	corm::ConfigurationAssembler manager;
-	manager.registerConfiguration<ConsumerManagerTestConfig, ProviderConsumerManagerTestConfig, ProviderManagerTestConfig>();
-	manager.assemble();
+	corm::Context context;
+	context.registerConfiguration<ConsumerManagerTestConfig, ProviderConsumerManagerTestConfig, ProviderManagerTestConfig>();
+	context.assemble();
 }
 
 BOOST_AUTO_TEST_CASE(No_Config_Registered) {
-	corm::ConfigurationAssembler manager;
-	manager.assemble();
+	corm::Context context;
+	context.assemble();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
