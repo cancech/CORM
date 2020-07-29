@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_SUITE(Configuration_Test_Suite)
 
 
 BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
-	corm::ConfigurationWrapper<NoResourceTestConfig> wrapper;
+	corm::BeanManager manager;
+	corm::ConfigurationWrapper<NoResourceTestConfig> wrapper(&manager);
 	wrapper.registerResources();
 	BOOST_CHECK(wrapper.areResourcesSatisfied());
 
@@ -36,20 +37,22 @@ BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
 }
 
 BOOST_AUTO_TEST_CASE(Configuration_Without_Required_Resources) {
-	corm::ConfigurationWrapper<MissingResourcesTestConfig> wrapper;
+	corm::BeanManager manager;
+	corm::ConfigurationWrapper<MissingResourcesTestConfig> wrapper(&manager);
 	wrapper.registerResources();
 	BOOST_CHECK(!wrapper.areResourcesSatisfied());
 	BOOST_REQUIRE_THROW(wrapper.buildConfig(), corm::ConfigurationMissingResourcesException);
 }
 
 BOOST_AUTO_TEST_CASE(Provider_and_Consumer) {
+	corm::BeanManager manager;
 	// The Consumer config cannot be initialized
-	corm::ConfigurationWrapper<ConsumerTestConfig> consumerWrapper;
+	corm::ConfigurationWrapper<ConsumerTestConfig> consumerWrapper(&manager);
 	consumerWrapper.registerResources();
 	BOOST_CHECK(!consumerWrapper.areResourcesSatisfied());
 
 	// The provider can be initialized
-	corm::ConfigurationWrapper<ProviderTestConfig> providerWrapper;
+	corm::ConfigurationWrapper<ProviderTestConfig> providerWrapper(&manager);
 	providerWrapper.registerResources();
 	BOOST_CHECK(providerWrapper.areResourcesSatisfied());
 	ProviderTestConfig* provider = (ProviderTestConfig*) providerWrapper.buildConfig();
@@ -62,7 +65,7 @@ BOOST_AUTO_TEST_CASE(Provider_and_Consumer) {
 
 	// Verify that the values are correct
 	BOOST_CHECK_EQUAL(provider->getSomeIntValuePtr(), consumer->getProviderSomeIntValue());
-	BOOST_CHECK_EQUAL(corm::getBean<DummyClass*>("providerDummyClassSingleton"), consumer->getProviderDummyClassSingleton());
+	BOOST_CHECK_EQUAL(manager.getBean<DummyClass*>("providerDummyClassSingleton"), consumer->getProviderDummyClassSingleton());
 
 	delete(provider);
 	delete(consumer);

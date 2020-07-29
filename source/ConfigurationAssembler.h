@@ -29,7 +29,7 @@ public:
 	 */
 	template<class Config>
 	void registerConfiguration() {
-		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>();
+		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>(&beanManager);
 		c->registerResources();
 		waitingConfigs.push_back(c);
 	}
@@ -90,7 +90,8 @@ public:
 private:
 	// vector of configurations which are still waiting to be processed
 	std::vector<ConfigurationWrapperInterface*> waitingConfigs;
-
+	// The bean manager that holds the beans for this context
+	BeanManager beanManager;
 };
 
 }

@@ -18,9 +18,9 @@ CONFIGURATION(ProviderTestConfig)
 	}
 
 	virtual void provideBeans() {
-		corm::registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerDummyClassFactory");
-		corm::registerBean<DummyClass*>("providerDummyClassSingleton");
-		corm::registerBeanInstance<int&>("providerSomeIntValue", someIntValue);
+		beanManager->registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerDummyClassFactory");
+		beanManager->registerBean<DummyClass*>("providerDummyClassSingleton");
+		beanManager->registerBeanInstance<int&>("providerSomeIntValue", someIntValue);
 	}
 
 	int* getSomeIntValuePtr() {

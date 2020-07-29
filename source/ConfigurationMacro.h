@@ -12,10 +12,10 @@
 #define CONFIGURATION(Config) \
 	class Config: public corm::BaseConfiguration { \
 	public: \
-		Config(): BaseConfiguration() {} \
+		Config(corm::BeanManager* manager): BaseConfiguration(manager) {} \
 
 // Macro which allows for short handing the creation/definition of resources
-#define RESOURCE(Type, Name) Type Name = corm::getBean<Type>(#Name);
+#define RESOURCE(Type, Name) Type Name = beanManager->getBean<Type>(#Name);
 // Macro which allows for short handing the registration of resources within the ConfigurationWrapper
 #define CONFIG_WRAPPER_REGISTER_RESOURCE(Type, Name) registerResource(#Name);
 

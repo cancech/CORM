@@ -22,7 +22,7 @@ class BaseConfiguration {
 
 public:
 	// CTOR
-	BaseConfiguration() = default;
+	BaseConfiguration(BeanManager* manager): beanManager(manager) {}
 	// DTOR
 	virtual ~BaseConfiguration() = default;
 
@@ -36,6 +36,9 @@ public:
 	}
 
 protected:
+	// The bean manager that holds the beans for this context
+	BeanManager* beanManager;
+
 	/*
 	 * Called after the configuration has been created, to allow steps to be taken once all required
 	 * resources become available.
@@ -99,6 +102,10 @@ template<class Config>
 class ConfigurationWrapper: public ConfigurationWrapperInterface {
 
 public:
+
+	// CTOR
+	ConfigurationWrapper(BeanManager* manager): beanManager(manager) {}
+
 	/*
 	 * The names of the resources that the Configuration requires are to be registered via registerResource
 	 * in this method. Must be defined for each Configuration class type.
@@ -119,7 +126,7 @@ public:
 	 */
 	virtual bool areResourcesSatisfied() {
 		waitingResources.erase(std::remove_if(waitingResources.begin(), waitingResources.end(),
-				[](std::string s) { return BeanManager::instance()->containsBean(s); }), waitingResources.end());
+				[this](std::string s) { return beanManager->containsBean(s); }), waitingResources.end());
 		return waitingResources.empty();
 	}
 
@@ -133,7 +140,7 @@ public:
 	virtual BaseConfiguration* buildConfig() {
 		if (!areResourcesSatisfied())
 			throw ConfigurationMissingResourcesException(configName, waitingResources);
-		return new Config();
+		return new Config(beanManager);
 	}
 
 	/*
@@ -148,6 +155,8 @@ private:
 	std::vector<std::string> waitingResources;
 	// Name of the configuration
 	std::string configName = typeid(Config).name();
+	// The bean manager that holds the beans for this context
+	BeanManager* beanManager;
 
 	/*
 	 * Helper method to register a resource name

@@ -14,7 +14,7 @@
 CONFIGURATION(ProviderConsumerManagerTestConfig)
 
 	virtual void provideBeans() {
-		corm::registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerConsumerDummyFactory");
+		beanManager->registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerConsumerDummyFactory");
 	}
 
 RESOURCES(ProviderConsumerManagerTestConfig,

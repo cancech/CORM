@@ -14,7 +14,7 @@
 CONFIGURATION(ProviderManagerTestConfig)
 
 	virtual void provideBeans() {
-		corm::registerBean<DummyClass*>("providerManagerDummySingleton");
+		beanManager->registerBean<DummyClass*>("providerManagerDummySingleton");
 	}
 
 CONFIGURATION_END_NO_RESOURCE(ProviderManagerTestConfig)

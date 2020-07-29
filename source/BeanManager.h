@@ -36,13 +36,10 @@ namespace corm {
 class BeanManager {
 
 public:
-	/*
-	 * Get the singleton instance of the bean manager.
-	 */
-	static BeanManager* instance() {
-		static BeanManager *INSTANCE = new BeanManager();
-		return INSTANCE;
-	}
+	// CTOR and DTOR
+	BeanManager() = default;
+	// DTOR
+	virtual ~BeanManager() = default;
 
 	/*
 	 * Register a bean with the manager. The bean will rely on the specified creator for
@@ -147,10 +144,6 @@ private:
 	// Stack for "getBean" calls when there is a chained situation. Used to detect cycles
 	std::vector<std::string> beanNameStack;
 
-	// CTOR and DTOR are hidden due to singleton
-	BeanManager() = default;
-	~BeanManager() = default;
-
 	/*
 	 * Convenience method to check if a bean of the given name can be added to the manager.
 	 *
@@ -165,30 +158,6 @@ private:
 			throw InvalidBeanNameException(name, "bean is already registered");
 	}
 };
-
-/*
- * Convenience function for registering beans with the manager.
- */
-template<typename T, class U = SingletonBeanCreator<T>>
-void registerBean(std::string name) {
-	BeanManager::instance()->registerBean<T, U>(name);
-}
-
-/*
- * Convenience function for registering bean instances with the manager.
- */
-template<typename T>
-void registerBeanInstance(std::string name, T instance) {
-	BeanManager::instance()->registerBeanInstance<T>(name, instance);
-}
-
-/*
- * Convenience function for retrieving beans from the manager.
- */
-template<typename T>
-T getBean(std::string name) {
-	return BeanManager::instance()->getBean<T>(name);
-}
 
 }
 
