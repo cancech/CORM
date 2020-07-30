@@ -24,7 +24,6 @@ BOOST_AUTO_TEST_SUITE(Configuration_Test_Suite)
 BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
 	corm::BeanManager manager;
 	corm::ConfigurationWrapper<NoResourceTestConfig> wrapper(&manager);
-	wrapper.registerResources();
 	BOOST_CHECK(wrapper.areResourcesSatisfied());
 
 	NoResourceTestConfig* config = (NoResourceTestConfig*) wrapper.buildConfig();
@@ -39,7 +38,6 @@ BOOST_AUTO_TEST_CASE(Configuration_No_Resources_Required) {
 BOOST_AUTO_TEST_CASE(Configuration_Without_Required_Resources) {
 	corm::BeanManager manager;
 	corm::ConfigurationWrapper<MissingResourcesTestConfig> wrapper(&manager);
-	wrapper.registerResources();
 	BOOST_CHECK(!wrapper.areResourcesSatisfied());
 	BOOST_REQUIRE_THROW(wrapper.buildConfig(), corm::ConfigurationMissingResourcesException);
 }
@@ -48,12 +46,10 @@ BOOST_AUTO_TEST_CASE(Provider_and_Consumer) {
 	corm::BeanManager manager;
 	// The Consumer config cannot be initialized
 	corm::ConfigurationWrapper<ConsumerTestConfig> consumerWrapper(&manager);
-	consumerWrapper.registerResources();
 	BOOST_CHECK(!consumerWrapper.areResourcesSatisfied());
 
 	// The provider can be initialized
 	corm::ConfigurationWrapper<ProviderTestConfig> providerWrapper(&manager);
-	providerWrapper.registerResources();
 	BOOST_CHECK(providerWrapper.areResourcesSatisfied());
 	ProviderTestConfig* provider = (ProviderTestConfig*) providerWrapper.buildConfig();
 	provider->initialize();

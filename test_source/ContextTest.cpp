@@ -11,12 +11,13 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "../source/Context.h"
+#include "Context.h"
 
 #include "config/SingleConfigMissingResourcesTestConfig.h"
 #include "config/ProviderManagerTestConfig.h"
 #include "config/ProviderConsumerManagerTestConfig.h"
 #include "config/ConsumerManagerTestConfig.h"
+#include "config/ConfigWithDeps.h"
 
 BOOST_AUTO_TEST_SUITE(ConfigurationManager_Test_Suite)
 
@@ -34,6 +35,12 @@ BOOST_AUTO_TEST_CASE(Multiple_Configs) {
 
 BOOST_AUTO_TEST_CASE(No_Config_Registered) {
 	corm::Context context;
+	context.assemble();
+}
+
+BOOST_AUTO_TEST_CASE(Config_Dependency) {
+	corm::Context context;
+	context.registerConfiguration<ConfigWithDeps>();
 	context.assemble();
 }
 

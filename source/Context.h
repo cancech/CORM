@@ -30,8 +30,12 @@ public:
 	template<class Config>
 	void registerConfiguration() {
 		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>(&beanManager);
-		c->registerResources();
 		waitingConfigs.push_back(c);
+
+		// Register any dependencies
+		for(ConfigurationWrapperInterface* i: Config::getDependentConfigurations(&beanManager)) {
+			waitingConfigs.push_back(i);
+		}
 	}
 
 	/*

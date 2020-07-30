@@ -15,6 +15,10 @@
 
 namespace corm {
 
+class ConfigurationWrapperInterface;
+template<class Config>
+class ConfigurationWrapper;
+
 /*
  * Base configuration which is to be extended for the purpose of creating a new configuration.
  */
@@ -25,6 +29,16 @@ public:
 	BaseConfiguration(BeanManager* manager): beanManager(manager) {}
 	// DTOR
 	virtual ~BaseConfiguration() = default;
+
+	/*
+	 * Get a list of all dependent configurations of this configuration.
+	 *
+	 * @return std::vector containing the ConfigurationWrapperInterface pointers for all of of
+	 * 		   the dependent configurations.
+	 */
+	static std::vector<ConfigurationWrapperInterface*> getDependentConfigurations(BeanManager* manager) {
+		return std::vector<ConfigurationWrapperInterface*>();
+	}
 
 	/*
 	 * Initialize the configuration, triggers the postInit and provideBeans methods (in that
@@ -104,13 +118,10 @@ class ConfigurationWrapper: public ConfigurationWrapperInterface {
 public:
 
 	// CTOR
-	ConfigurationWrapper(BeanManager* manager): beanManager(manager) {}
-
-	/*
-	 * The names of the resources that the Configuration requires are to be registered via registerResource
-	 * in this method. Must be defined for each Configuration class type.
-	 */
-	virtual void registerResources();
+	ConfigurationWrapper(BeanManager* manager): beanManager(manager) {
+		// Automatically register resources to make sure that the waitingResources is appropriately populated
+		registerResources();
+	}
 
 	/*
 	 * Get the name of the configuration that is wrapped.
@@ -149,6 +160,13 @@ public:
 	virtual std::vector<std::string> getWaitingResources() const {
 		return waitingResources;
 	}
+
+protected:
+	/*
+	 * The names of the resources that the Configuration requires are to be registered via registerResource
+	 * in this method. Must be defined for each Configuration class type.
+	 */
+	virtual void registerResources();
 
 private:
 	// Vector of the names of resources that the configuration is still waiting on
