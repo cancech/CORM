@@ -25,7 +25,7 @@ public:
 	 * Register a single configuration
 	 *
 	 * @template the configuration class that is to be registered. It *must* extend corm::BaseConfiguration,
-	 * 			 and must have a no-arg constructor. Recommendation is to use the provided macros.
+	 * 			 recommendation is to use the provided macros.
 	 */
 	template<class Config>
 	void registerConfiguration() {
@@ -38,7 +38,7 @@ public:
 	 * Register any number of configurations (minimum 1)
 	 *
 	 * @template list all configuration classes that are to be registered. Each *must* extend corm::BaseConfiguration,
-	 * 			 and must have a no-arg constructor. Recommendation is to use the provided macros.
+	 * 			 recommendation is to use the provided macros.
 	 */
 	template<class Config, class Config2, class... moreConfigs>
 	void registerConfiguration() {
