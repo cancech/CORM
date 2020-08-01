@@ -22,8 +22,13 @@ class Context {
 public:
 	// DTOR
 	virtual ~Context() {
+		// Cleanup the configs which are still waiting
 		for (ConfigurationWrapperInterface* i: waitingConfigs)
 			delete(i);
+
+		// Clean up the configs which have already been processed
+		for (BaseConfiguration* c: activeConfigs)
+			delete(c);
 	}
 
 	/*
@@ -80,11 +85,11 @@ public:
 					// Create the config and initialize, process it
 					BaseConfiguration* config = wrapper->buildConfig();
 					config->initialize();
+					activeConfigs.push_back(config);
 
 					// Clean up and remove the temp classes
 					it = waitingConfigs.erase(it);
 					delete(wrapper);
-					delete(config);
 
 				} else
 					++it;
@@ -99,6 +104,8 @@ public:
 private:
 	// vector of configurations which are still waiting to be processed
 	std::vector<ConfigurationWrapperInterface*> waitingConfigs;
+	// vector of configurations which are processed and active
+	std::vector<BaseConfiguration*> activeConfigs;
 	// The bean manager that holds the beans for this context
 	BeanManager beanManager;
 };
