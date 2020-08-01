@@ -102,4 +102,44 @@ BOOST_AUTO_TEST_CASE(Factory_Pointer_Creator) {
 	delete(dummy2);
 }
 
+
+BOOST_AUTO_TEST_CASE(Smart_Singleton_Creator) {
+	corm::SmartSingletonBeanCreator<DummyClass> creator;
+
+	// Get one instance
+	corm::ValueWrapper<std::shared_ptr<DummyClass>>* wrapper = creator.create();
+	std::shared_ptr<DummyClass> bean1 = wrapper->value;
+	delete(wrapper);
+	BOOST_CHECK_EQUAL(0, bean1->getValue());
+
+	// Get a second instance
+	wrapper = creator.create();
+	std::shared_ptr<DummyClass> bean2 = wrapper->value;
+	delete(wrapper);
+	BOOST_CHECK_EQUAL(0, bean2->getValue());
+
+	// Make sure that the two instances are the same
+	BOOST_CHECK_EQUAL(bean1, bean2);
+}
+
+
+BOOST_AUTO_TEST_CASE(Smart_Factory_Creator) {
+	corm::SmartFactoryBeanCreator<DummyClass> creator;
+
+	// Get one instance
+	corm::ValueWrapper<std::shared_ptr<DummyClass>>* wrapper = creator.create();
+	std::shared_ptr<DummyClass> bean1 = wrapper->value;
+	delete(wrapper);
+	BOOST_CHECK_EQUAL(0, bean1->getValue());
+
+	// Get a second instance
+	wrapper = creator.create();
+	std::shared_ptr<DummyClass> bean2 = wrapper->value;
+	delete(wrapper);
+	BOOST_CHECK_EQUAL(0, bean2->getValue());
+
+	// Make sure that the two instances are the same
+	BOOST_CHECK(bean1 != bean2);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
