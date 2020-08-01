@@ -39,7 +39,10 @@ public:
 	// CTOR and DTOR
 	BeanManager() = default;
 	// DTOR
-	virtual ~BeanManager() = default;
+	virtual ~BeanManager() {
+		for (std::pair<std::string, BaseProvider*> i: repo)
+			delete(i.second);
+	}
 
 	/*
 	 * Register a bean with the manager. The bean will rely on the specified creator for

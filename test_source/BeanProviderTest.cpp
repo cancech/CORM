@@ -65,6 +65,8 @@ BOOST_AUTO_TEST_CASE(Bean_factory_provider_pointer) {
 	int* bean2 = provider.getBean();
 
 	BOOST_CHECK(bean1 != bean2);
+	delete(bean1);
+	delete(bean2);
 }
 
 BOOST_AUTO_TEST_CASE(Bean_instance_provider) {

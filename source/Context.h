@@ -20,6 +20,11 @@ namespace corm {
 class Context {
 
 public:
+	// DTOR
+	virtual ~Context() {
+		for (ConfigurationWrapperInterface* i: waitingConfigs)
+			delete(i);
+	}
 
 	/*
 	 * Register a single configuration

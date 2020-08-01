@@ -82,6 +82,8 @@ BOOST_AUTO_TEST_CASE(Register_factory_pointer) {
 	BOOST_CHECK(bean1 != bean2);
 	BOOST_CHECK(bean1 != NULL);
 	BOOST_CHECK(bean2 != NULL);
+	delete(bean1);
+	delete(bean2);
 }
 
 BOOST_AUTO_TEST_CASE(Register_multiples_of_same_bean) {
@@ -156,6 +158,7 @@ BOOST_AUTO_TEST_CASE(Bean_instance_pointer) {
 	DummyClass* bean = manager.getBean<DummyClass*>("instance_pointer");
 	BOOST_CHECK_EQUAL(instance->getValue(), bean->getValue());
 	BOOST_CHECK_EQUAL(instance, bean);
+	delete(instance);
 }
 
 BOOST_AUTO_TEST_CASE(Check_for_Cyclic_Bean_Dependencies) {

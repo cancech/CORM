@@ -25,10 +25,13 @@ BOOST_AUTO_TEST_CASE(Test_Beans) {
 	BOOST_CHECK_EQUAL(321, intBean2);
 	// Check when pulled in using the function directly
 	BOOST_CHECK_EQUAL("This is the strBean", provide_strBean());
-	BOOST_CHECK_EQUAL(1.111, *provide_dblBean());
+	double* dblBean = provide_dblBean();
+	BOOST_CHECK_EQUAL(1.111, *dblBean);
 	// Check beans that are in a namespace
 	BOOST_CHECK_EQUAL(1, nsIntBean1);
 	BOOST_CHECK_EQUAL(100, testing::provide_nsIntBean2());
+
+	delete(dblBean);
 }
 
 /*

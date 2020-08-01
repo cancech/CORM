@@ -68,7 +68,12 @@ private:
  */
 template<typename T>
 struct SingletonBeanCreator<T*> {
-	ValueWrapper<T*>* create() {
+	virtual ~SingletonBeanCreator() {
+		if (instance != NULL)
+			delete(instance);
+	}
+
+	virtual ValueWrapper<T*>* create() {
 		// Delay creation until it is actually needed
 		if (instance == NULL)
 			instance = new T();
