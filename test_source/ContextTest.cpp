@@ -55,4 +55,17 @@ BOOST_AUTO_TEST_CASE(Wrong_Bean_Ptr) {
 	BOOST_REQUIRE_THROW(context.assemble(), corm::InvalidBeanTypeException);
 }
 
+BOOST_AUTO_TEST_CASE(Duplicate_Resources_Different_Config) {
+	corm::Context context;
+	context.registerConfiguration<ProvideBean1Config, ProvideBean2Config>();
+	BOOST_REQUIRE_THROW(context.assemble(), corm::InvalidBeanNameException);
+}
+
+BOOST_AUTO_TEST_CASE(Load_Same_Config_Twice) {
+	corm::Context context;
+	context.registerConfiguration<ProvideBean1Config>();
+	context.registerConfiguration<ProvideBean1Config>();
+	BOOST_REQUIRE_THROW(context.assemble(), corm::InvalidBeanNameException);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
