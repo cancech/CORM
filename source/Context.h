@@ -59,6 +59,7 @@ public:
 	 * Attempt to assemble all of the registered configurations.
 	 *
 	 * @throws ConfigurationInitializationException if the dependencies for all configurations cannot be fulfilled
+	 * @throws InvalidBeanTypeException if there is a bean type mismatch
 	 */
 	void assemble();
 
@@ -69,6 +70,22 @@ private:
 	std::vector<BaseConfiguration*> activeConfigs;
 	// The bean manager that holds the beans for this context
 	BeanManager beanManager;
+
+	/*
+	 * Try to load the configuration that belongs to the wrapper.
+	 *
+	 * @param wrapper ConfigurationWrapperInterface* pointer to the wrapper for the configuration to try to load
+	 *
+	 * @return true if the configuration was loaded successfully
+	 */
+	bool loadConfig(ConfigurationWrapperInterface* wrapper);
+
+	/*
+	 * Verify the context and make sure that everything is properly loaded.
+	 *
+	 * @throws ConfigurationInitializationException if the dependencies for all configurations cannot be fulfilled
+	 */
+	void verifyContext();
 };
 
 }

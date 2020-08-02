@@ -33,41 +33,67 @@ void Context::assemble() {
 		// Iterate through all registered configs and try to build and initialize them
 		std::vector<ConfigurationWrapperInterface*>::iterator it = waitingConfigs.begin();
 		while (it != waitingConfigs.end()) {
-			ConfigurationWrapperInterface* wrapper = *it;
-
-			if (wrapper->areResourcesSatisfied()) {
-				// The config has all of its resources/dependencies satisfied
+			// Try to load the configuration
+			if (loadConfig(*it)) {
+				// Success! Clean up the wrapper for the loaded config
 				configProcessed = true;
-				// Create the config and initialize, process it
-				BaseConfiguration* config = wrapper->buildConfig();
-				try {
-					config->initialize();
-					activeConfigs.push_back(config);
-				} catch (...) {
-					// Prevent leaking memory if an exception is thrown during initialization
-					delete(config);
-					throw;
-				}
-
-				// Clean up and remove the temp classes
+				delete(*it);
 				it = waitingConfigs.erase(it);
-				delete(wrapper);
-
 			} else
 				++it;
 
 		}
 	} while(configProcessed);
 
-	if (!waitingConfigs.empty()) {
-		// Check to see if there is a circular dependency
-		CircularDependencyChecker checker;
-		for (ConfigurationWrapperInterface* i: waitingConfigs)
-			checker.add(i->getName(), i->getWaitingResources(), i->getBeanNames());
-		if (checker.checkForCycle()) {
-			throw ConfigurationCycleException(checker.getCycle());
-		}
+	// Ensure the sanity of the context
+	verifyContext();
+}
 
+/*
+ * Try to load the configuration from the wrapper.
+ */
+bool Context::loadConfig(ConfigurationWrapperInterface* wrapper) {
+	if (!wrapper->areResourcesSatisfied())
+		return false;
+
+	// The config has all of its resources/dependencies satisfied
+	// Create the config and initialize, process it
+	BaseConfiguration* config = wrapper->buildConfig();
+	try {
+		config->initialize();
+	} catch (...) {
+		// Prevent leaking memory if an exception is thrown during initialization
+		delete(config);
+		throw;
+	}
+
+	// Now that the configuration is created and initialized, store it
+	activeConfigs.push_back(config);
+	return true;
+}
+
+/*
+ * Helper function to check whether a cycle is present
+ *
+ * @throws ConfigurationCycleException if a cycle is detected
+ */
+void checkForCycle(std::vector<ConfigurationWrapperInterface*>& configs) {
+	// Check to see if there is a circular dependency
+	CircularDependencyChecker checker;
+	for (ConfigurationWrapperInterface* i: configs)
+		checker.add(i->getName(), i->getWaitingResources(), i->getBeanNames());
+	if (checker.checkForCycle()) {
+		throw ConfigurationCycleException(checker.getCycle());
+	}
+}
+
+/*
+ * Sanity check of the context
+ */
+void Context::verifyContext() {
+	if (!waitingConfigs.empty()) {
+		// Check whether a cycle is present and preventing the assembly of the context
+		checkForCycle(waitingConfigs);
 		// If not, just throw the exception that cannot initialize
 		throw ConfigurationInitializationException(waitingConfigs);
 	}
