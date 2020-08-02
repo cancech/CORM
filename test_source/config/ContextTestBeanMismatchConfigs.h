@@ -1,12 +1,12 @@
 /*
- * DummyBeanProviderTestConfig.h
+ * ContextTestBeanMismatchConfigs.h
  *
  *  Created on: Aug. 2, 2020
  *      Author: Jaroslav Bosak
  */
 
-#ifndef CONFIG_DUMMYBEANTESTCONFIG_H_
-#define CONFIG_DUMMYBEANTESTCONFIG_H_
+#ifndef CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_
+#define CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_
 
 #include "Configuration.h"
 #include "DummyClass.h"
@@ -21,12 +21,16 @@ CONFIGURATION(DummyBeanProviderTestConfig)
 
 CONFIGURATION_END_NO_RESOURCE(DummyBeanProviderTestConfig)
 
+
+
 // Consumer config which tries to load the bean as an int
 CONFIGURATION(DummyBeanAsIntConsumerTestConfig)
 
 RESOURCES(DummyBeanAsIntConsumerTestConfig,
 		(int, BeanName)
 )
+
+
 
 // Consumer config which tries to load the bean pointer as a scalar
 CONFIGURATION(PtrAsScalarConsumerTestConfig)
@@ -36,4 +40,5 @@ RESOURCES(PtrAsScalarConsumerTestConfig,
 )
 
 
-#endif /* CONFIG_DUMMYBEANTESTCONFIG_H_ */
+
+#endif /* CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_ */

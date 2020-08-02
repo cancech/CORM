@@ -12,10 +12,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "DummyClass.h"
-#include "config/MissingResourcesTestConfig.h"
-#include "config/NoResourceTestConfig.h"
-#include "config/ProviderTestConfig.h"
-#include "config/ConsumerTestConfig.h"
+#include "config/ConfigurationTestConfigs.h"
 
 
 BOOST_AUTO_TEST_SUITE(Configuration_Test_Suite)

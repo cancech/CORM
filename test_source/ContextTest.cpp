@@ -13,12 +13,9 @@
 
 #include "Context.h"
 
-#include "config/SingleConfigMissingResourcesTestConfig.h"
-#include "config/ProviderManagerTestConfig.h"
-#include "config/ProviderConsumerManagerTestConfig.h"
-#include "config/ConsumerManagerTestConfig.h"
-#include "config/ConfigWithDeps.h"
-#include "config/DummyBeanTestConfig.h"
+#include "config/ContextTestConfigs.h"
+#include "config/ContextTestBeanMismatchConfigs.h"
+#include "config/ContextTestDependenctConfigs.h"
 
 BOOST_AUTO_TEST_SUITE(ConfigurationManager_Test_Suite)
 
