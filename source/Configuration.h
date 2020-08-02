@@ -26,7 +26,7 @@ class BaseConfiguration {
 
 public:
 	// CTOR
-	BaseConfiguration(BeanManager* manager): m_beanManager(manager) {}
+	BaseConfiguration(BeanManager* manager);
 	// DTOR
 	virtual ~BaseConfiguration() = default;
 
@@ -35,9 +35,7 @@ public:
 	 *
 	 * @return std::string the name of the configuration
 	 */
-	static std::string getName() {
-		return "Undefined";
-	}
+	static std::string getName();
 
 	/*
 	 * Get a list of all dependent configurations of this configuration.
@@ -45,9 +43,7 @@ public:
 	 * @return std::vector containing the ConfigurationWrapperInterface pointers for all of of
 	 * 		   the dependent configurations.
 	 */
-	static std::vector<ConfigurationWrapperInterface*> getDependentConfigurations(BeanManager* manager) {
-		return std::vector<ConfigurationWrapperInterface*>();
-	}
+	static std::vector<ConfigurationWrapperInterface*> getDependentConfigurations(BeanManager* manager);
 
 	/*
 	 * Get a list of all resources that the configuration requires. This is expected to be overridden by the
@@ -55,26 +51,19 @@ public:
 	 *
 	 * @return std::vector of std::string names of the resources that the configuration requires
 	 */
-	static std::vector<std::string> getResourceNames() {
-		return std::vector<std::string>();
-	}
+	static std::vector<std::string> getResourceNames();
 
 	/*
 	 * Get a list of the names of all beans that the configuration will provide. This is expected to be overridden
 	 * by the subclass, so that each configuration can properly report its own beans.
 	 */
-	static std::vector<std::string> getBeanNames() {
-		return std::vector<std::string>();
-	}
+	static std::vector<std::string> getBeanNames();
 
 	/*
 	 * Initialize the configuration, triggers the postInit and provideBeans methods (in that
 	 * order).
 	 */
-	void initialize() {
-		postInit();
-		provideBeans();
-	}
+	void initialize();
 
 protected:
 	// The bean manager that holds the beans for this context
@@ -84,12 +73,12 @@ protected:
 	 * Called after the configuration has been created, to allow steps to be taken once all required
 	 * resources become available.
 	 */
-	virtual void postInit() {}
+	virtual void postInit();
 
 	/*
 	 * Called after postContruct completes, to allow the configuration to provide any/all beans.
 	 */
-	virtual void provideBeans() {}
+	virtual void provideBeans();
 
 };
 

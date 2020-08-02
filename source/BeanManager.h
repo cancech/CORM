@@ -36,13 +36,8 @@ namespace corm {
 class BeanManager {
 
 public:
-	// CTOR and DTOR
-	BeanManager() = default;
 	// DTOR
-	virtual ~BeanManager() {
-		for (std::pair<std::string, BaseProvider*> i: repo)
-			delete(i.second);
-	}
+	virtual ~BeanManager();
 
 	/*
 	 * Register a bean with the manager. The bean will rely on the specified creator for
@@ -137,9 +132,7 @@ public:
 	 *
 	 * @returns bool true if the bean is already registered
 	 */
-	bool containsBean(std::string name) {
-		return repo.count(name);
-	}
+	bool containsBean(std::string name);
 
 private:
 	// Repository of all registered beans
@@ -154,12 +147,7 @@ private:
 	 *
 	 * @throws InvalidBeanNameException if a bean by that name already exists, or if the bean name is empty
 	 */
-	void verifyCanAddBean(std::string name) {
-		if (name.empty())
-			throw InvalidBeanNameException(name, "bean name cannot be empty");
-		else if (containsBean(name))
-			throw InvalidBeanNameException(name, "bean is already registered");
-	}
+	void verifyCanAddBean(std::string name);
 };
 
 }
