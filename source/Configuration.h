@@ -26,9 +26,18 @@ class BaseConfiguration {
 
 public:
 	// CTOR
-	BaseConfiguration(BeanManager* manager): beanManager(manager) {}
+	BaseConfiguration(BeanManager* manager): m_beanManager(manager) {}
 	// DTOR
 	virtual ~BaseConfiguration() = default;
+
+	/*
+	 * Get the name of the configuration. This is expected to be overridden by the subclass.
+	 *
+	 * @return std::string the name of the configuration
+	 */
+	static std::string getName() {
+		return "Undefined";
+	}
 
 	/*
 	 * Get a list of all dependent configurations of this configuration.
@@ -38,6 +47,24 @@ public:
 	 */
 	static std::vector<ConfigurationWrapperInterface*> getDependentConfigurations(BeanManager* manager) {
 		return std::vector<ConfigurationWrapperInterface*>();
+	}
+
+	/*
+	 * Get a list of all resources that the configuration requires. This is expected to be overridden by the
+	 * subclass, so that each configuration can properly report its own resources.
+	 *
+	 * @return std::vector of std::string names of the resources that the configuration requires
+	 */
+	static std::vector<std::string> getResourceNames() {
+		return std::vector<std::string>();
+	}
+
+	/*
+	 * Get a list of the names of all beans that the configuration will provide. This is expected to be overridden
+	 * by the subclass, so that each configuration can properly report its own beans.
+	 */
+	static std::vector<std::string> getBeanNames() {
+		return std::vector<std::string>();
 	}
 
 	/*
@@ -51,7 +78,7 @@ public:
 
 protected:
 	// The bean manager that holds the beans for this context
-	BeanManager* beanManager;
+	BeanManager* m_beanManager;
 
 	/*
 	 * Called after the configuration has been created, to allow steps to be taken once all required
@@ -102,9 +129,16 @@ public:
 	/*
 	 * Get the vector of resources that are remaining to be fulfilled.
 	 *
-	 * @return std::vector of resource names that are not yet available
+	 * @return std::vector of std::string resource names that are not yet available
 	 */
 	virtual std::vector<std::string> getWaitingResources() const = 0;
+
+	/*
+	 * Get the names of all beans that the configuration will provide when its resources are fulfilled.
+	 *
+	 * @return std::vector of std::string bean names that will be provided.
+	 */
+	virtual std::vector<std::string> getBeanNames() const = 0;
 };
 
 /*
@@ -127,7 +161,7 @@ public:
 	 * Get the name of the configuration that is wrapped.
 	 */
 	virtual std::string getName() const {
-		return configName;
+		return Config::getName();
 	}
 
 	/*
@@ -150,7 +184,7 @@ public:
 	 */
 	virtual BaseConfiguration* buildConfig() {
 		if (!areResourcesSatisfied())
-			throw ConfigurationMissingResourcesException(configName, waitingResources);
+			throw ConfigurationMissingResourcesException(getName(), waitingResources);
 		return new Config(beanManager);
 	}
 
@@ -161,28 +195,26 @@ public:
 		return waitingResources;
 	}
 
-protected:
 	/*
-	 * The names of the resources that the Configuration requires are to be registered via registerResource
-	 * in this method. Must be defined for each Configuration class type.
+	 * Get the vector of beans that will be provided.
 	 */
-	virtual void registerResources();
+	virtual std::vector<std::string> getBeanNames() const {
+		return Config::getBeanNames();
+	}
 
 private:
 	// Vector of the names of resources that the configuration is still waiting on
 	std::vector<std::string> waitingResources;
-	// Name of the configuration
-	std::string configName = typeid(Config).name();
 	// The bean manager that holds the beans for this context
 	BeanManager* beanManager;
 
+
 	/*
-	 * Helper method to register a resource name
-	 *
-	 * @param std::string the name of the resource to register
+	 * Register all of the resources that the configuration requires
 	 */
-	void registerResource(std::string name) {
-		waitingResources.push_back(name);
+	void registerResources() {
+		const std::vector<std::string> allResources = Config::getResourceNames();
+		waitingResources.assign(allResources.begin(), allResources.end());
 	}
 };
 

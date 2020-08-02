@@ -14,31 +14,32 @@
 // Provider config which provides a single DummyClass instance
 CONFIGURATION(DummyBeanProviderTestConfig)
 
-	void provideBeans() {
-		beanManager->registerBean<DummyClass*>("BeanName");
-	}
+	BEANS(
+			(BEAN, DummyClass*, "BeanName")
+	)
 
-
-CONFIGURATION_END_NO_RESOURCE(DummyBeanProviderTestConfig)
+END_CONFIGURATION
 
 
 
 // Consumer config which tries to load the bean as an int
 CONFIGURATION(DummyBeanAsIntConsumerTestConfig)
 
-RESOURCES(DummyBeanAsIntConsumerTestConfig,
+	RESOURCES(DummyBeanAsIntConsumerTestConfig,
 		(int, BeanName)
-)
+	)
+
+END_CONFIGURATION
 
 
 
 // Consumer config which tries to load the bean pointer as a scalar
 CONFIGURATION(PtrAsScalarConsumerTestConfig)
 
-RESOURCES(PtrAsScalarConsumerTestConfig,
-		(DummyClass, BeanName)
-)
+	RESOURCES(PtrAsScalarConsumerTestConfig,
+			(DummyClass, BeanName)
+	)
 
-
+END_CONFIGURATION
 
 #endif /* CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_ */

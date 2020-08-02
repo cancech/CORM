@@ -13,29 +13,30 @@
 // Configuration which required a couple of resources, which are expected to be missing.
 CONFIGURATION(SingleConfigMissingResourcesTestConfig)
 
-RESOURCES(SingleConfigMissingResourcesTestConfig,
-		(int, missingIntValue),
-		(std::string&, missingStringReference)
-)
+	RESOURCES(SingleConfigMissingResourcesTestConfig,
+			(int, missingIntValue),
+			(std::string&, missingStringReference)
+	)
 
+END_CONFIGURATION
 
 
 // Configuration which provides a single bean
 CONFIGURATION(ProvideBean1Config)
 
-	void provideBeans() {
-		beanManager->registerBean<int&>("DuplicateBean");
-	}
+	BEANS(
+			(BEAN, int&, "DuplicateBean")
+	)
 
-CONFIGURATION_END_NO_RESOURCE(ProvideBean1Config)
+END_CONFIGURATION
 
 // Configuration which provides a single bean, same name as ProvideBean1Config
 CONFIGURATION(ProvideBean2Config)
 
-	void provideBeans() {
-		beanManager->registerBean<double&>("DuplicateBean");
-	}
+	BEANS(
+			(BEAN, double&, "DuplicateBean")
+	)
 
-CONFIGURATION_END_NO_RESOURCE(ProvideBean2Config)
+END_CONFIGURATION
 
 #endif /* CONFIG_CONTEXTTESTCONFIGS_H_ */

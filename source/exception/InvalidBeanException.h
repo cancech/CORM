@@ -9,22 +9,12 @@
 #define INVALIDBEANEXCEPTION_H_
 
 #include <exception>
-#include <boost/stacktrace.hpp>
-#include <boost/exception/all.hpp>
 #include <vector>
 #include <iostream>
-
-typedef boost::error_info<struct tag_stacktrace, boost::stacktrace::stacktrace> traced;
 
 namespace corm {
 
 class ConfigurationWrapperInterface;
-
-// TODO see if this does what I want it to do, in terms of throwing an exception with a stack trace
-template<class E>
-void throw_with_trace(const E &e) {
-	throw boost::enable_error_info(e) << traced(boost::stacktrace::stacktrace());
-}
 
 /*
  * Exception which is to be thrown when attempting to use an invalid name for a bean. This includes:
@@ -67,6 +57,13 @@ struct ConfigurationMissingResourcesException: public std::runtime_error {
  */
 struct ConfigurationInitializationException: public std::runtime_error {
 	ConfigurationInitializationException(std::vector<ConfigurationWrapperInterface*>& wrappers);
+};
+
+/*
+ * Exception which is thrown when a cycle is detected between two (or more) configuration files.
+ */
+struct ConfigurationCycleException: public std::runtime_error {
+	ConfigurationCycleException(const std::vector<std::string>& cycle);
 };
 
 }

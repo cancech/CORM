@@ -15,35 +15,38 @@
 // Config which provides a single bean
 CONFIGURATION(ProviderManagerTestConfig)
 
-	virtual void provideBeans() {
-		beanManager->registerBean<DummyClass*>("providerManagerDummySingleton");
-	}
+	BEANS(
+			(BEAN, DummyClass*, "providerManagerDummySingleton")
+	)
 
-CONFIGURATION_END_NO_RESOURCE(ProviderManagerTestConfig)
+END_CONFIGURATION
 
 
 
 // Config which requires a single resource from ProviderManagerTestConfig and provides a single bean
 CONFIGURATION(ProviderConsumerManagerTestConfig)
 
-	virtual void provideBeans() {
-		beanManager->registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerConsumerDummyFactory");
-	}
+	BEANS(
+			(BEAN, DummyClass, corm::FactoryBeanCreator<DummyClass>, "providerConsumerDummyFactory")
+	)
 
-RESOURCES(ProviderConsumerManagerTestConfig,
-		(DummyClass*, providerManagerDummySingleton)
-)
+	RESOURCES(ProviderConsumerManagerTestConfig,
+			(DummyClass*, providerManagerDummySingleton)
+	)
+
+END_CONFIGURATION
 
 
 
 // Config which requires two resources provided by ProviderManagerTestConfig and ProviderConsumerManagerTestConfig
 CONFIGURATION(ConsumerManagerTestConfig)
 
-RESOURCES(ConsumerManagerTestConfig,
-		(DummyClass*, providerManagerDummySingleton),
-		(DummyClass, providerConsumerDummyFactory)
-)
+	RESOURCES(ConsumerManagerTestConfig,
+			(DummyClass*, providerManagerDummySingleton),
+			(DummyClass, providerConsumerDummyFactory)
+	)
 
+END_CONFIGURATION
 
 
 // Config which lists the above configs as dependencies and verifies that the beans were properly loaded.
@@ -59,6 +62,8 @@ CONFIGURATION(ConfigWithDeps)
 	RESOURCES(ConfigWithDeps,
 		(DummyClass*, providerManagerDummySingleton),
 		(DummyClass, providerConsumerDummyFactory)
-)
+	)
+
+END_CONFIGURATION
 
 #endif /* CONFIG_CONTEXTTESTDEPENDENCTCONFIGS_H_ */

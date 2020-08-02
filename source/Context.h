@@ -10,6 +10,7 @@
 
 #include <vector>
 #include "Configuration.h"
+#include "CircularDependencyChecker.h"
 
 namespace corm {
 
@@ -103,8 +104,18 @@ public:
 			}
 		} while(configProcessed);
 
-		if (!waitingConfigs.empty())
+		if (!waitingConfigs.empty()) {
+			// Check to see if there is a circular dependency
+			CircularDependencyChecker checker;
+			for (ConfigurationWrapperInterface* i: waitingConfigs)
+				checker.add(i->getName(), i->getWaitingResources(), i->getBeanNames());
+			if (checker.checkForCycle()) {
+				throw ConfigurationCycleException(checker.getCycle());
+			}
+
+			// If not, just throw the exception that cannot initialize
 			throw ConfigurationInitializationException(waitingConfigs);
+		}
 	}
 
 private:

@@ -16,6 +16,7 @@
 #include "config/ContextTestConfigs.h"
 #include "config/ContextTestBeanMismatchConfigs.h"
 #include "config/ContextTestDependenctConfigs.h"
+#include "config/ContextTestCircularDependencyConfig.h"
 
 BOOST_AUTO_TEST_SUITE(ConfigurationManager_Test_Suite)
 
@@ -66,6 +67,12 @@ BOOST_AUTO_TEST_CASE(Load_Same_Config_Twice) {
 	context.registerConfiguration<ProvideBean1Config>();
 	context.registerConfiguration<ProvideBean1Config>();
 	BOOST_REQUIRE_THROW(context.assemble(), corm::InvalidBeanNameException);
+}
+
+BOOST_AUTO_TEST_CASE(Circular_Config_Dependency) {
+	corm::Context context;
+	context.registerConfiguration<CircularDep1TestConfig, CircularDep2TestConfig>();
+	BOOST_REQUIRE_THROW(context.assemble(), corm::ConfigurationCycleException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -61,8 +61,18 @@ ConfigurationInitializationException::ConfigurationInitializationException(std::
 	std::runtime_error("Unable to initialize configurations: " + vectorAsString(wrappers)){
 }
 
+/*
+ * Constructor that converts the vector of a config cycle vector to a string
+ */
+ConfigurationCycleException::ConfigurationCycleException(const std::vector<std::string>& cycle):
+	std::runtime_error("Configuration cycle detected " + vectorAsString(cycle)) {
 }
 
+}
+
+/*
+ * Properly "convert" the ConfigurationWrapperInterface to string for exception reporting purposes
+ */
 std::ostream& operator<<(std::ostream& os, const corm::ConfigurationWrapperInterface* w) {
 	os << w->getName() << " is missing resources " << corm::vectorAsString(w->getWaitingResources());
 	return os;

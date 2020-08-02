@@ -17,12 +17,13 @@
 // Configuration that is expected to not have its resources fulfilled.
 CONFIGURATION(MissingResourcesTestConfig)
 
-RESOURCES(MissingResourcesTestConfig,
-		(int, missingIntValue),
-		(std::string&, missingStringReference),
-		(DummyClass*, missingDummyPointer)
-)
+	RESOURCES(MissingResourcesTestConfig,
+			(int, missingIntValue),
+			(std::string&, missingStringReference),
+			(DummyClass*, missingDummyPointer)
+	)
 
+END_CONFIGURATION
 
 
 // Configuration that required no resources nor provides any beans
@@ -39,7 +40,7 @@ CONFIGURATION(NoResourceTestConfig)
 		numTimesProvideBeansCalled++;
 	}
 
-CONFIGURATION_END_NO_RESOURCE(NoResourceTestConfig)
+END_CONFIGURATION
 
 
 
@@ -50,11 +51,11 @@ CONFIGURATION(ProviderTestConfig)
 		someIntValue = 56789;
 	}
 
-	virtual void provideBeans() {
-		beanManager->registerBean<DummyClass, corm::FactoryBeanCreator<DummyClass>>("providerDummyClassFactory");
-		beanManager->registerBean<DummyClass*>("providerDummyClassSingleton");
-		beanManager->registerBeanInstance<int&>("providerSomeIntValue", someIntValue);
-	}
+	BEANS(
+			(BEAN, DummyClass, corm::FactoryBeanCreator<DummyClass>, "providerDummyClassFactory"),
+			(BEAN, DummyClass*, "providerDummyClassSingleton"),
+			(BEAN_INSTANCE, int&, "providerSomeIntValue", someIntValue)
+	)
 
 	int* getSomeIntValuePtr() {
 		return &someIntValue;
@@ -63,7 +64,7 @@ CONFIGURATION(ProviderTestConfig)
 private:
 	int someIntValue = 0;
 
-CONFIGURATION_END_NO_RESOURCE(ProviderTestConfig)
+END_CONFIGURATION
 
 
 
@@ -83,5 +84,7 @@ CONFIGURATION(ConsumerTestConfig)
 			(DummyClass*, providerDummyClassSingleton),
 			(int&, providerSomeIntValue)
 	)
+
+END_CONFIGURATION
 
 #endif /* CONFIG_CONFIGURATIONTESTCONFIGS_H_ */
