@@ -1,10 +1,3 @@
-/*
- * ContextTestCircularDependencyConfig.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIG_CONTEXTTESTCIRCULARDEPENDENCYCONFIG_H_
 #define CONFIG_CONTEXTTESTCIRCULARDEPENDENCYCONFIG_H_
 

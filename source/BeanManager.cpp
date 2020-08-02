@@ -1,10 +1,3 @@
-/*
- * BeanManager.cpp
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #include "BeanManager.h"
 
 namespace corm {

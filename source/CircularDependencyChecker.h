@@ -1,10 +1,3 @@
-/*
- * CircularDependencyChecker.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CIRCULARDEPENDENCYCHECKER_H_
 #define CIRCULARDEPENDENCYCHECKER_H_
 

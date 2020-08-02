@@ -1,10 +1,3 @@
-/*
- * CircularDependencyChecker.cpp
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #include "CircularDependencyChecker.h"
 #include <iostream>
 #include <algorithm>

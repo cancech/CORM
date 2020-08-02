@@ -1,10 +1,3 @@
-/*
- * AbstractConfig.h
- *
- *  Created on: Jul. 25, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 

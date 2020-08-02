@@ -1,10 +1,3 @@
-/*
- * ContextTestDependenctConfigs.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIG_CONTEXTTESTDEPENDENCTCONFIGS_H_
 #define CONFIG_CONTEXTTESTDEPENDENCTCONFIGS_H_
 

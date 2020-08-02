@@ -1,10 +1,3 @@
-/*
- * BeanProvider.h
- *
- *  Created on: Jul. 11, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef BEANPROVIDER_H_
 #define BEANPROVIDER_H_
 

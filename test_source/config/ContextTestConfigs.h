@@ -1,10 +1,3 @@
-/*
- * ContextTestConfigs.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIG_CONTEXTTESTCONFIGS_H_
 #define CONFIG_CONTEXTTESTCONFIGS_H_
 

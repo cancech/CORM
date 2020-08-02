@@ -1,10 +1,3 @@
-/*
- * SimpleCormAdder.h
- *
- *  Created on: Jul. 5, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef SIMPLECORMADDER_H_
 #define SIMPLECORMADDER_H_
 

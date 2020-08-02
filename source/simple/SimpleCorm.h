@@ -1,10 +1,3 @@
-/*
- * Bean.h
- *
- *  Created on: Jul. 4, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef SIMPLECORM_H_
 #define SIMPLECORM_H_
 

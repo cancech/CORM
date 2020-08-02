@@ -1,10 +1,3 @@
-/*
- * ObjectRepositoryManager.h
- *
- *  Created on: Jul. 11, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef BEANMANAGER_H_
 #define BEANMANAGER_H_
 

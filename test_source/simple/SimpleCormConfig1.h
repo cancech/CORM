@@ -1,12 +1,3 @@
-/*
- * SimpleCormConfig1.h
- *
- *  Created on: Jul. 4, 2020
- *      Author: Jaroslav Bosak
- *
- * Test configuration to provide some beans
- */
-
 #ifndef SIMPLECORMCONFIG1_H_
 #define SIMPLECORMCONFIG1_H_
 

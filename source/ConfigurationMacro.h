@@ -1,10 +1,3 @@
-/*
- * ConfigurationMacro.h
- *
- *  Created on: Jul. 26, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIGURATIONMACRO_H_
 #define CONFIGURATIONMACRO_H_
 

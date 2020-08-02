@@ -1,10 +1,3 @@
-/*
- * InvalidBeanException.h
- *
- *  Created on: Jul. 12, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef INVALIDBEANEXCEPTION_H_
 #define INVALIDBEANEXCEPTION_H_
 

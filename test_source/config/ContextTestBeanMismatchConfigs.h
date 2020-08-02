@@ -1,10 +1,3 @@
-/*
- * ContextTestBeanMismatchConfigs.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_
 #define CONFIG_CONTEXTTESTBEANMISMATCHCONFIGS_H_
 

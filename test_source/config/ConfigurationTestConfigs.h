@@ -1,13 +1,3 @@
-/*
- * ConfigurationTestConfigs.h
- *
- *  Created on: Aug. 2, 2020
- *      Author: Jaroslav Bosak
- *
- *
- * Provides the various configuration files that ConfigurationTest.cpp requires for its tests.
- */
-
 #ifndef CONFIG_CONFIGURATIONTESTCONFIGS_H_
 #define CONFIG_CONFIGURATIONTESTCONFIGS_H_
 

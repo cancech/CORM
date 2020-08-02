@@ -1,10 +1,3 @@
-/*
- * BeanCreatorTest.cpp
- *
- *  Created on: Jul. 11, 2020
- *      Author: Jaroslav Bosak
- */
-
 #define BOOST_TEST_DYN_LINK
 #ifdef STAND_ALONE
 #   define BOOST_TEST_MODULE Main

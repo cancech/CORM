@@ -1,10 +1,3 @@
-/*
- * SimpleCormNsAdder.h
- *
- *  Created on: Jul. 5, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef SIMPLECORMNSADDER_H_
 #define SIMPLECORMNSADDER_H_
 

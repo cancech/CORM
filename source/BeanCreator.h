@@ -1,10 +1,3 @@
-/*
- * BeanCreator.h
- *
- *  Created on: Jul. 11, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef BEANCREATOR_H_
 #define BEANCREATOR_H_
 

@@ -1,9 +1,3 @@
-/*
- * InvalidBeanException.cpp
- *
- *  Created on: Jul. 25, 2020
- *      Author: Jaroslav Bosak
- */
 #include "InvalidBeanException.h"
 #include "Configuration.h"
 

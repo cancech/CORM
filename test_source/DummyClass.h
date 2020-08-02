@@ -1,10 +1,3 @@
-/*
- * DummyClass.h
- *
- *  Created on: Jul. 11, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef DUMMYCLASS_H_
 #define DUMMYCLASS_H_
 

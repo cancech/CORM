@@ -1,10 +1,3 @@
-/*
- * ConfigurationManager.h
- *
- *  Created on: Jul. 27, 2020
- *      Author: Jaroslav Bosak
- */
-
 #ifndef CONTEXT_H_
 #define CONTEXT_H_
 
