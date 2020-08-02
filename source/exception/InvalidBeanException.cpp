@@ -42,14 +42,14 @@ std::string vectorAsString(const std::vector<T>& v) {
 /*
  * Constructor for the BeanDependencyCycleException that converts the cycle vector to a string
  */
-BeanDependencyCycleException::BeanDependencyCycleException(std::vector<std::string>& cycle):
+BeanDependencyCycleException::BeanDependencyCycleException(const std::vector<std::string>& cycle):
 	std::runtime_error("Dependency cycle detected " + vectorAsString(cycle)) {
 }
 
 /*
  * Constructor for the ConfigurationMissingResources that converts the vector of missing resources to a string
  */
-ConfigurationMissingResourcesException::ConfigurationMissingResourcesException(std::string configName, std::vector<std::string>& missing):
+ConfigurationMissingResourcesException::ConfigurationMissingResourcesException(const std::string configName, const std::vector<std::string>& missing):
 	std::runtime_error("Unable to create Configuration " + configName + " due to missing resources: " + vectorAsString(missing)){
 
 }
@@ -57,7 +57,7 @@ ConfigurationMissingResourcesException::ConfigurationMissingResourcesException(s
 /*
  * Constructor that converts the vector of unfulfilled ConfigurationWrapperInterface to string
  */
-ConfigurationInitializationException::ConfigurationInitializationException(std::vector<ConfigurationWrapperInterface*>& wrappers):
+ConfigurationInitializationException::ConfigurationInitializationException(const std::vector<ConfigurationWrapperInterface*>& wrappers):
 	std::runtime_error("Unable to initialize configurations: " + vectorAsString(wrappers)){
 }
 

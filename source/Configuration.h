@@ -51,13 +51,13 @@ public:
 	 *
 	 * @return std::vector of std::string names of the resources that the configuration requires
 	 */
-	static std::vector<std::string> getResourceNames();
+	static const std::vector<std::string>& getResourceNames();
 
 	/*
 	 * Get a list of the names of all beans that the configuration will provide. This is expected to be overridden
 	 * by the subclass, so that each configuration can properly report its own beans.
 	 */
-	static std::vector<std::string> getBeanNames();
+	static const std::vector<std::string>& getBeanNames();
 
 	/*
 	 * Initialize the configuration, triggers the postInit and provideBeans methods (in that
@@ -120,14 +120,14 @@ public:
 	 *
 	 * @return std::vector of std::string resource names that are not yet available
 	 */
-	virtual std::vector<std::string> getWaitingResources() const = 0;
+	virtual const std::vector<std::string>& getWaitingResources() const = 0;
 
 	/*
 	 * Get the names of all beans that the configuration will provide when its resources are fulfilled.
 	 *
 	 * @return std::vector of std::string bean names that will be provided.
 	 */
-	virtual std::vector<std::string> getBeanNames() const = 0;
+	virtual const std::vector<std::string>& getBeanNames() const = 0;
 };
 
 /*
@@ -180,14 +180,14 @@ public:
 	/*
 	 * Get the vector of waiting resources.
 	 */
-	virtual std::vector<std::string> getWaitingResources() const {
+	virtual const std::vector<std::string>& getWaitingResources() const {
 		return waitingResources;
 	}
 
 	/*
 	 * Get the vector of beans that will be provided.
 	 */
-	virtual std::vector<std::string> getBeanNames() const {
+	virtual const std::vector<std::string>& getBeanNames() const {
 		return Config::getBeanNames();
 	}
 

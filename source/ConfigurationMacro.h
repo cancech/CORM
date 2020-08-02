@@ -18,7 +18,8 @@
 // Macro which allows for short handing the creation/definition of resources
 #define RESOURCE(Type, Name) Type Name = m_beanManager->getBean<Type>(#Name);
 // Macro which allows for short handing the registration of resources within the ConfigurationWrapper
-#define REGISTER_RESOURCE_NAME(Type, Name) resourceNames.push_back(#Name);
+#define REGISTER_LAST_RESOURCE_NAME(Type, Name) #Name
+#define REGISTER_RESOURCE_NAME(Type, Name) REGISTER_LAST_RESOURCE_NAME(Type, Name),
 
 /*
  * Macro which ends the definition of a configuration file.
@@ -1113,7 +1114,7 @@
 #define CONFIG_RESOURCE_ITEMS(...) macro_dispatcher(CONFIG_RESOURCE, __VA_ARGS__) (__VA_ARGS__)
 
 // Iterative Macros for generating the code to register the resources within the ConfigurationWrapper
-#define CONFIG_REGISTER_RESOURCE_NAME1(P) REGISTER_RESOURCE_NAME P
+#define CONFIG_REGISTER_RESOURCE_NAME1(P) REGISTER_LAST_RESOURCE_NAME P
 #define CONFIG_REGISTER_RESOURCE_NAME2(P, ...) REGISTER_RESOURCE_NAME P \
 	CONFIG_REGISTER_RESOURCE_NAME1(__VA_ARGS__)
 #define CONFIG_REGISTER_RESOURCE_NAME3(P, ...) REGISTER_RESOURCE_NAME P \
@@ -1633,9 +1634,10 @@
 private: \
 	CONFIG_RESOURCE_ITEMS(__VA_ARGS__) \
 public: \
-	static std::vector<std::string> getResourceNames() { \
-		std::vector<std::string> resourceNames; \
-		CONFIG_RESOURCE_NAMES(__VA_ARGS__) \
+	static const std::vector<std::string>& getResourceNames() { \
+		static std::vector<std::string> resourceNames { \
+			CONFIG_RESOURCE_NAMES(__VA_ARGS__) \
+		}; \
 		return resourceNames; \
 	}
 
@@ -2177,19 +2179,20 @@ public: \
 
 // Macros for registering the name of a bean instance
 #define NAME_BEAN_INSTANCE3(Type, Name, Instance) \
-		beanNames.push_back(Name);
+		Name
 #define NAME_BEAN_INSTANCE2(Type, Instance) \
 		NAME_BEAN_INSTANCE3(Type, #Instance, Instance)
 #define NAME_BEAN_INSTANCE(...) macro_dispatcher(NAME_BEAN_INSTANCE, __VA_ARGS__) (__VA_ARGS__)
 // Macro for registering the name of a bean
 #define NAME_BEAN2(Type, Name) \
-		beanNames.push_back(Name);
+		Name
 #define NAME_BEAN3(Type, Creator, Name) \
-		beanNames.push_back(Name);
+		Name
 #define NAME_BEAN(...) macro_dispatcher(NAME_BEAN, __VA_ARGS__) (__VA_ARGS__)
 
 // Iterative macro for processing the bean names
-#define PROCESS_BEAN_NAME(BeanType, ...) NAME_##BeanType(__VA_ARGS__)
+#define PROCESS_LAST_BEAN_NAME(BeanType, ...) NAME_##BeanType(__VA_ARGS__)
+#define PROCESS_BEAN_NAME(BeanType, ...) PROCESS_LAST_BEAN_NAME(BeanType, __VA_ARGS__),
 #define PROCESS_BEAN_NAME_ITEM1(P) PROCESS_BEAN_NAME P
 #define PROCESS_BEAN_NAME_ITEM2(P, ...) PROCESS_BEAN_NAME P \
 	PROCESS_BEAN_NAME_ITEM1(__VA_ARGS__)
@@ -2711,9 +2714,10 @@ public: \
 	void provideBeans() { \
 		PROCESS_PROVIDE_BEANS(__VA_ARGS__) \
 	} \
-	static std::vector<std::string> getBeanNames() { \
-		std::vector<std::string> beanNames; \
-		PROCESS_BEAN_NAMES(__VA_ARGS__) \
+	static const std::vector<std::string>& getBeanNames() { \
+		static std::vector<std::string> beanNames { \
+			PROCESS_BEAN_NAMES(__VA_ARGS__) \
+		}; \
 		return beanNames; \
 	}
 

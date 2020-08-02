@@ -29,15 +29,17 @@ std::vector<ConfigurationWrapperInterface*> BaseConfiguration::getDependentConfi
 /*
  * Get the default resource names
  */
-std::vector<std::string> BaseConfiguration::getResourceNames() {
-	return std::vector<std::string>();
+const std::vector<std::string>& BaseConfiguration::getResourceNames() {
+	static std::vector<std::string> emptyVec;
+	return emptyVec;
 }
 
 /*
  * Get the default bean names
  */
-std::vector<std::string> BaseConfiguration::getBeanNames() {
-	return std::vector<std::string>();
+const std::vector<std::string>& BaseConfiguration::getBeanNames() {
+	static std::vector<std::string> emptyVec;
+	return emptyVec;
 }
 
 /*

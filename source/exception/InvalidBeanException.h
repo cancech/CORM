@@ -22,7 +22,7 @@ class ConfigurationWrapperInterface;
  *      * retrieving a bean that has not yet been registered
  */
 struct InvalidBeanNameException: public std::runtime_error {
-	InvalidBeanNameException(std::string name, std::string reason) :
+	InvalidBeanNameException(const std::string name, const std::string reason) :
 			std::runtime_error("Invalid bean name \"" + name + "\": " + reason) {
 	}
 };
@@ -32,7 +32,7 @@ struct InvalidBeanNameException: public std::runtime_error {
  * what is desired (i.e.: register bean is Foo, but trying to retrieve Bar).
  */
 struct InvalidBeanTypeException: public std::runtime_error {
-	InvalidBeanTypeException(std::string name, std::string wanted, std::string actual) :
+	InvalidBeanTypeException(const std::string name, const std::string wanted, const std::string actual) :
 			std::runtime_error("Invalid bean type for \"" + name + "\": wanted " + wanted + " but was " + actual) {
 	}
 };
@@ -42,21 +42,21 @@ struct InvalidBeanTypeException: public std::runtime_error {
  * BeanB, which depends on BeanA).
  */
 struct BeanDependencyCycleException: public std::runtime_error {
-	BeanDependencyCycleException(std::vector<std::string>& cycle);
+	BeanDependencyCycleException(const std::vector<std::string>& cycle);
 };
 
 /*
  * Exception which is thrown when attempting to create a configuration while it is still waiting on resources.
  */
 struct ConfigurationMissingResourcesException: public std::runtime_error {
-	ConfigurationMissingResourcesException(std::string configName, std::vector<std::string>& missing);
+	ConfigurationMissingResourcesException(const std::string configName, const std::vector<std::string>& missing);
 };
 
 /*
  * Exception which is thrown when an issue is encountered when attempting to initialize the configurations.
  */
 struct ConfigurationInitializationException: public std::runtime_error {
-	ConfigurationInitializationException(std::vector<ConfigurationWrapperInterface*>& wrappers);
+	ConfigurationInitializationException(const std::vector<ConfigurationWrapperInterface*>& wrappers);
 };
 
 /*
