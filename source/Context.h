@@ -84,8 +84,14 @@ public:
 					configProcessed = true;
 					// Create the config and initialize, process it
 					BaseConfiguration* config = wrapper->buildConfig();
-					config->initialize();
-					activeConfigs.push_back(config);
+					try {
+						config->initialize();
+						activeConfigs.push_back(config);
+					} catch (...) {
+						// Prevent leaking memory if an exception is thrown during initialization
+						delete(config);
+						throw;
+					}
 
 					// Clean up and remove the temp classes
 					it = waitingConfigs.erase(it);
