@@ -8,12 +8,6 @@
 		Config(corm::BeanManager* manager): BaseConfiguration(manager) {} \
 		static std::string getName() { return #Config; }
 
-// Macro which allows for short handing the creation/definition of resources
-#define RESOURCE(Type, Name) Type Name = m_beanManager->getBean<Type>(#Name);
-// Macro which allows for short handing the registration of resources within the ConfigurationWrapper
-#define REGISTER_LAST_RESOURCE_NAME(Type, Name) #Name
-#define REGISTER_RESOURCE_NAME(Type, Name) REGISTER_LAST_RESOURCE_NAME(Type, Name),
-
 /*
  * Macro which ends the definition of a configuration file.
  */
@@ -588,7 +582,10 @@
 	}
 
 
-
+// Macros which allows for short handing the creation/definition of resources
+#define RESOURCE3(Type, Name, Var) Type Var = m_beanManager->getBean<Type>(Name);
+#define RESOURCE2(Type, Var) RESOURCE3(Type, #Var, Var)
+#define RESOURCE(...) macro_dispatcher(RESOURCE, __VA_ARGS__) (__VA_ARGS__)
 
 // Iterative Macros for generating the resource in the configuration class
 #define CONFIG_RESOURCE1(P) RESOURCE P
@@ -1105,6 +1102,20 @@
 
 // The entry point into the iterative configuration class resource generation
 #define CONFIG_RESOURCE_ITEMS(...) macro_dispatcher(CONFIG_RESOURCE, __VA_ARGS__) (__VA_ARGS__)
+
+
+
+
+// Macro which allows for short handing the registration of resources within the ConfigurationWrapper
+
+// Macro for registering the name of a bean
+#define REGISTER_LAST_RESOURCE_NAME3(Type, Name, Var) Name
+#define REGISTER_LAST_RESOURCE_NAME2(Type, Var) REGISTER_LAST_RESOURCE_NAME3(Type, #Var, Var)
+#define REGISTER_LAST_RESOURCE_NAME(...) macro_dispatcher(REGISTER_LAST_RESOURCE_NAME, __VA_ARGS__) (__VA_ARGS__)
+
+#define REGISTER_RESOURCE_NAME2(Type, Name) REGISTER_LAST_RESOURCE_NAME(Type, Name),
+#define REGISTER_RESOURCE_NAME3(Type, Name, Var) REGISTER_LAST_RESOURCE_NAME(Type, Name, Var),
+#define REGISTER_RESOURCE_NAME(...) macro_dispatcher(REGISTER_RESOURCE_NAME, __VA_ARGS__) (__VA_ARGS__)
 
 // Iterative Macros for generating the code to register the resources within the ConfigurationWrapper
 #define CONFIG_REGISTER_RESOURCE_NAME1(P) REGISTER_LAST_RESOURCE_NAME P

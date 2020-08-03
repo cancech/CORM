@@ -24,7 +24,7 @@ CONFIGURATION(ProviderConsumerManagerTestConfig)
 	)
 
 	RESOURCES(
-			(DummyClass*, providerManagerDummySingleton)
+			(DummyClass*, "providerManagerDummySingleton", someVar)
 	)
 
 END_CONFIGURATION
@@ -36,7 +36,7 @@ CONFIGURATION(ConsumerManagerTestConfig)
 
 	RESOURCES(
 			(DummyClass*, providerManagerDummySingleton),
-			(DummyClass, providerConsumerDummyFactory)
+			(DummyClass, "providerConsumerDummyFactory", var)
 	)
 
 END_CONFIGURATION
@@ -48,12 +48,12 @@ CONFIGURATION(ConfigWithDeps)
 	DEPENDENCIES(ConsumerManagerTestConfig, ProviderConsumerManagerTestConfig, ProviderManagerTestConfig)
 
 	virtual void postInit() {
-		assert(providerManagerDummySingleton != NULL);
-		assert(providerManagerDummySingleton->getValue() == providerConsumerDummyFactory.getValue());
+		assert(var != NULL);
+		assert(var->getValue() == providerConsumerDummyFactory.getValue());
 	}
 
 	RESOURCES(
-		(DummyClass*, providerManagerDummySingleton),
+		(DummyClass*, "providerManagerDummySingleton", var),
 		(DummyClass, providerConsumerDummyFactory)
 	)
 
