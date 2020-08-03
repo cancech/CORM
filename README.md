@@ -171,3 +171,135 @@ static std::vector<corm::ConfigurationWrapperInterface*> getDependentConfigurati
   )
 ```
 are all valid, though note the possible memory leak on the someclass bean instance.
+
+The original example of
+
+```C++
+  BEANS(
+    (BEAN, SomeClass&, "someClassBean"),
+    (BEAN_INSTANCE, CustomClass*, instance)
+  )
+```
+will generate code which looks as follows
+
+```C++
+protected: \
+	void provideBeans() { \
+		m_beanManager->registerBean<SomeClass&>("someClassBean"); \
+	m_beanManager->registerBeanInstance<CustomClass*>("instance", instance); \
+	} \
+public: \
+	static const std::vector<std::string>& getBeanNames() { \
+		static std::vector<std::string> beanNames { \
+			"someClassBean", \
+			"instance", \
+		}; \
+		return beanNames; \
+	}
+```
+
+#### RESOURCES Macro
+
+```C++
+  RESOURCES(
+    (int, intbean),
+    (std::string&, "beanName", stringBean),
+    (SampleClass*, sampleClassInstance)
+  )
+```
+This Macro will shorthand the process of registering resource dependencies, as well as the static getResourceNames() member function. Much like the BEANS Marco each required resource must be contained within a set of brackets, and the values provided for each resource are as follows:
+
+* Type - indicating what type of resource is expected to be retrieved from the BeanManager
+* Bean Name - Optionally indicating the name of the bean to retrieve. If not present the bean name is derived from the variable name.
+* Variable Name - name of the variable where the bean is to be stored
+
+This will create all of the specified resources as members within the Configuration and load each of them from the BeanManager. The example will generate the following code:
+
+```C++
+private: \
+	int  intbean = m_beanManager->getBean<int>("intbean"); \
+	std::string&  stringBean = m_beanManager->getBean<std::string&>("beanName"); \
+	SampleClass*  sampleClassInstance = m_beanManager->getBean<SampleClass*>("sampleClassInstance"); \
+public: \
+	static const std::vector<std::string>& getResourceNames() { \
+		static std::vector<std::string> resourceNames { \
+			"intbean", \
+			"beanName", \
+			"sampleClassInstance" \
+		}; \
+		return resourceNames; \
+	}
+```
+
+#### END_CONFIGURATION Macro
+
+```C++
+END_CONFIGURATION
+```
+This Macro is present to maintain the symetry of the Configuration definition, and it merely places an end to the class. Meaning that it just simply converts to 
+```C++
+};
+```
+
+### BeanManager
+
+As mentioned, the BeanManager is responsible for managing the specific beans within the Context. The Configurations will pull resources from it, push beans into it, and through this allow for instances of classes or types to be easily passed around the application. To push a bean into the BeanManager it must be registered, and registering the bean can be done in one of two ways:
+
+* Instance
+* Creator
+
+#### Instance
+
+An instance bean is essentially a specific instance of an object or type, that is registered under a name within the BeanManager. The nature of what this truly means is dependent on what type is registered (pointer, reference, or scalar), with the result being the same as if the type was retrieve via a "get" member function. A pointer or reference will pass the pointer or reference around and thus sharing the same instance across multiple actors, whereas a scalar will be passed via copy with all of the ramafications that that bring with it. When an instance is passed, the BeanManager will not be responsible for managing any memory associated with it. Therefore the Configuration will allocated the memory should be then responsible for deallocating it upon desctruction, or some other approach taken based on what is applicable in the specific circumstance. To register an instance simply
+
+```C++
+BeanManager::registerBeanInstance<Type>("Name", someInstance);
+```
+
+Note that the compiler may be able to deduce the type on its own, however this is not a guarentee. For example when passing a scalar instance the compiler will most likley deduce a scalar type, instead of a reference that may be more desirable. For this reason the Configuration Macros do not take the change and force the type to be specified.
+
+#### Creator
+
+This is a more interesting means through which to manage beans. In this situation no instance is created outright, but rather a Creator is specified to indicate how the bean is to be created and managed. There are several Creators provided (see BeanCreator.h):
+
+* corm::SingletonBeanCreator<Type> - creates a singleton instance which is provided as either a pointer or reference (note that scalar is not supported). The creator will ensure that the singleton instance is destroyed when the creator is destroyed (it will only be destroyed when the BeanManager is destroyed when the Context is destroyed)
+* corm::FactoryBeanCreator<Type> - creates a new instance each time the bean is resourced, returning either a scalar or a pointer (note that reference is not supported). The creator does not track created instances, and thus will not clean up any memory upon destruction. For this reason it is recommended to use this with scalars to avoid memory leaks.
+* corm::SmartSingleBeanCreator<Type, Ptr> - equivalent to the corm::SingleBeanCreator, except that the single pointer is contained within a smart pointer. The type of smart pointer can be specified via the Ptr template and it will default to std::shared_ptr.
+* corm::SmartFactoryBeanCreator<Type, Ptr> - equivalent to corm::FactoryBeanCreator, except that the created instance wrapped within a smart pointer. The type of smart pointer can be specified via the Ptr template and it will default to std::shared_ptr.
+
+The type of creator to use is specified when the bean is registered
+
+```C++
+BeanManager::registerBean<Type, Creator>();
+```
+
+Note that the for the provided creators the bean is not created until the bean is requested for the first time, meaning that if the bean is not resourced the creator will not create it.
+
+It is possible and easy to create custom creators. There are however limitations:
+
+* The creator must have a default constructor. No other constructor is supported or will be used by the BeanManager
+* Must contain a create member function corm::ValueWrapper<Type>* create()
+
+The ValueWrapper<Type> is employed to work around limitations of templates within C++, specifically to ensure that type references are not broken while moving through the BeanManager. For example the following is a custom creator which will create int 123 each time it is called.
+
+```C++
+struct Example123Creator {
+	corm::ValueWrapper<int> create() {
+		return 123;
+	}
+};
+```
+
+It could then be used to create a bean as simple as 
+
+```C++
+m_beanManager->registerBean<int, Example123Creator>();
+```
+
+or within a Configuration file
+
+```C++
+BEANS(
+	(BEAN, int, Example123Creator, "myNewBean")
+)
+```
