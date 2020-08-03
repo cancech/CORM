@@ -198,7 +198,7 @@ public: \
 	}
 ```
 
-Note that up to 256 beans can be registered in a single Configuration through the means indicated here. 
+Note that up to 256 beans can be registered in a single Configuration through the means indicated here.
 
 #### RESOURCES Macro
 
@@ -306,6 +306,10 @@ BEANS(
 	(BEAN, int, Example123Creator, "myNewBean")
 )
 ```
+
+##### BEAN Autoregistration
+
+As the description of the Bean Creator indicates, the provided Creators only work with beans that provide a default constructor. This limitation does allow for an extra piece of flexibility, specifically that it does not truly matter if a bean was registered prior to asking for it so long as it can be created by one of these provided Creators. If the bean in question can be created without any extra information, it is possible for it to be registered and created at the time of asking for it. This functionality is disabled by default (since it is only truly applicable for narrow circumstances), however this form of autoregistration can be enabled at compile time via ENABLE_BEAN_AUTOREGISTRATION. When this flag is defined, when the BeanManager is asked to retrieve a bean which has not been registered yet, it will be registered at that time with a corm::SingletonBeanCreator.
 
 ### Example
 
