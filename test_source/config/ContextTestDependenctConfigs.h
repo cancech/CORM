@@ -23,7 +23,7 @@ CONFIGURATION(ProviderConsumerManagerTestConfig)
 			(BEAN, DummyClass, corm::FactoryBeanCreator<DummyClass>, "providerConsumerDummyFactory")
 	)
 
-	RESOURCES(ProviderConsumerManagerTestConfig,
+	RESOURCES(
 			(DummyClass*, providerManagerDummySingleton)
 	)
 
@@ -34,7 +34,7 @@ END_CONFIGURATION
 // Config which requires two resources provided by ProviderManagerTestConfig and ProviderConsumerManagerTestConfig
 CONFIGURATION(ConsumerManagerTestConfig)
 
-	RESOURCES(ConsumerManagerTestConfig,
+	RESOURCES(
 			(DummyClass*, providerManagerDummySingleton),
 			(DummyClass, providerConsumerDummyFactory)
 	)
@@ -52,7 +52,7 @@ CONFIGURATION(ConfigWithDeps)
 		assert(providerManagerDummySingleton->getValue() == providerConsumerDummyFactory.getValue());
 	}
 
-	RESOURCES(ConfigWithDeps,
+	RESOURCES(
 		(DummyClass*, providerManagerDummySingleton),
 		(DummyClass, providerConsumerDummyFactory)
 	)

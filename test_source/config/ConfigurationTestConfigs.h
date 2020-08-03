@@ -7,7 +7,7 @@
 // Configuration that is expected to not have its resources fulfilled.
 CONFIGURATION(MissingResourcesTestConfig)
 
-	RESOURCES(MissingResourcesTestConfig,
+	RESOURCES(
 			(int, missingIntValue),
 			(std::string&, missingStringReference),
 			(DummyClass*, missingDummyPointer)
@@ -69,7 +69,7 @@ CONFIGURATION(ConsumerTestConfig)
 			return providerDummyClassSingleton;
 		}
 
-	RESOURCES(ConsumerTestConfig,
+	RESOURCES(
 			(DummyClass, providerDummyClassFactory),
 			(DummyClass*, providerDummyClassSingleton),
 			(int&, providerSomeIntValue)

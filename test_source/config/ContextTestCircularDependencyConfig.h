@@ -11,7 +11,7 @@ CONFIGURATION(CircularDep1TestConfig)
 			(BEAN, double&, "circularBean2")
 	)
 
-	RESOURCES(CircularDep1TestConfig,
+	RESOURCES(
 			(int&, circularBean1)
 	)
 
@@ -26,7 +26,7 @@ CONFIGURATION(CircularDep2TestConfig)
 			(BEAN, int&, "circularBean1")
 	)
 
-	RESOURCES(CircularDep2TestConfig,
+	RESOURCES(
 			(double&, circularBean2)
 	)
 

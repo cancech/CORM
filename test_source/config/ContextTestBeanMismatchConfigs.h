@@ -18,7 +18,7 @@ END_CONFIGURATION
 // Consumer config which tries to load the bean as an int
 CONFIGURATION(DummyBeanAsIntConsumerTestConfig)
 
-	RESOURCES(DummyBeanAsIntConsumerTestConfig,
+	RESOURCES(
 		(int, BeanName)
 	)
 
@@ -29,7 +29,7 @@ END_CONFIGURATION
 // Consumer config which tries to load the bean pointer as a scalar
 CONFIGURATION(PtrAsScalarConsumerTestConfig)
 
-	RESOURCES(PtrAsScalarConsumerTestConfig,
+	RESOURCES(
 			(DummyClass, BeanName)
 	)
 

@@ -6,7 +6,7 @@
 // Configuration which required a couple of resources, which are expected to be missing.
 CONFIGURATION(SingleConfigMissingResourcesTestConfig)
 
-	RESOURCES(SingleConfigMissingResourcesTestConfig,
+	RESOURCES(
 			(int, missingIntValue),
 			(std::string&, missingStringReference)
 	)

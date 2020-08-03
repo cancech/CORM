@@ -1623,7 +1623,7 @@
 #define CONFIG_RESOURCE_NAMES(...) macro_dispatcher(CONFIG_REGISTER_RESOURCE_NAME, __VA_ARGS__) (__VA_ARGS__)
 
 // Macro for generating the resources with the appropriate ConfigrationWrapper
-#define RESOURCES(Config, ...) \
+#define RESOURCES(...) \
 private: \
 	CONFIG_RESOURCE_ITEMS(__VA_ARGS__) \
 public: \
