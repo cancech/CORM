@@ -380,3 +380,27 @@ context.registerConfiguration<Configuration3>();
 // load any other Configurations
 context.assemble();
 ```
+
+## Performance
+
+The Runtime CORM provides many useful features, and it does its best to be easy to use. However this all comes at a cost, namely performance as there is much more overhead when dealing with bean in this manner, as well as due to the error checking capabilities it employs. The question becomes however, how much of a performance hit is incurred. To find out, I created the PerformanceTest.cpp unit test (it is disabled by default, as it does not check for correctness) and a contrieved scenario:
+
+* Four Configurations, one of which pulls the other three in as dependencies and performs a check to make sure that the beans the other create as what are expected.
+* Three ints are created across two Configurations
+* The third Configuration wraps the three ints in a DummyClass (just a wrapper for an int value), and registers a Singleton and Factory creator beans.
+
+All of the Configurations are registered within a Context, the context assembled, and the process repeated 100,000 times. The equivalent was created in plain C++ code (using classes to mimic the configuration layout, rather than just performing everything within a single function/class), as well as via Simple CORM functions. The results came out as:
+
+* Simple CORM: 0.005s (2)
+* Plain C++: 0.008 s  (2)
+* Runtime CORM: 1.947 s
+
+(2) The difference between Plain C++ and the Simple CORM approach can be attributed to how the code was organized. For the Plain C++ class wrappers were employed to mimic the layout of the Configurations, whereas no such attempt was made with the Simple CORM.
+
+Across multiple runs these results can be seen: just under 10ms for Plain C++ and Simple CORM, and just under 2s when the Runtime CORM is employed. The take away from this is that if pure speed and efficiency is of paramount importance, then the Runtime CORM may become an undesirable bottleneck. However, this is still less than 2 seconds to process what is essentially:
+
+* 400,000 Configuration files
+* 800,000 Beans/Resources
+* 100,000 Contexts
+
+In that sense, the performance should be more than adequate for most applications. Caveat: no attempt was made to stress the Runtime CORM, and it is not clear how performance will be impacts as the number of Configurations and Beans grows within a single Context. Undoubtedly creating 100,000 Contexts with 4 Configurations and 8 Beans a piece will be much quicker than creating one context containing 400,000 Configuration files and 800,000 Beans within it.
