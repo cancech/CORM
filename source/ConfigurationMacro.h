@@ -2707,6 +2707,7 @@ protected: \
 	void provideBeans() { \
 		PROCESS_PROVIDE_BEANS(__VA_ARGS__) \
 	} \
+public: \
 	static const std::vector<std::string>& getBeanNames() { \
 		static std::vector<std::string> beanNames { \
 			PROCESS_BEAN_NAMES(__VA_ARGS__) \

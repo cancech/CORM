@@ -47,6 +47,8 @@ CONFIGURATION(ProviderTestConfig)
 			(BEAN_INSTANCE, int&, "providerSomeIntValue", someIntValue)
 	)
 
+public:
+
 	int* getSomeIntValuePtr() {
 		return &someIntValue;
 	}
