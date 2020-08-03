@@ -83,7 +83,8 @@ protected:
   
   // Through the BEANS Macro indicate what beans are to be provided (more details below)
   BEANS(
-    (BEAN_INSTANCE, CustomClass*, "customClassInstance", instance)
+    (BEAN, SomeClass&, "someClassBean"),
+    (BEAN_INSTANCE, CustomClass*, instance)
   )
 
   // Through the RESOURCES Macro indicate what resources the configuration requires (more details below)
@@ -140,7 +141,7 @@ static std::vector<corm::ConfigurationWrapperInterface*> getDependentConfigurati
 ```C++
   BEANS(
     (BEAN, SomeClass&, "someClassBean"),
-    (BEAN_INSTANCE, CustomClass*, "customClassInstance", instance)
+    (BEAN_INSTANCE, CustomClass*, instance)
   )
  ```
  This Macro is available to shorthand the process of registering beans with the BeanManager, as well as providing an implementation for the static getBeanNames() member function. Each bean to be registered must be contained within a set of brackets, however there is some flexibility in terms of what and how the beans are registered. The first parameter for each bean is the Bean Type:
@@ -157,7 +158,7 @@ static std::vector<corm::ConfigurationWrapperInterface*> getDependentConfigurati
  For BEAN_INSTANCE the remaining parameters are as follows:
  
  * Type - indicating the type which is to be registered
- * Bean Name - Optionally indicating what name to register the instance under. If not present it will default to the member variable name
+ * Bean Name - Optionally indicating what name to register the instance under. If not present it will default to the instance text as the name (in the above example the bean name will be "instance")
  * Instance - the specific instance which is to be registered as a bean
  
  Note that for BEAN_INSTANCE the Instance can be any instance of the desired type. This could be a reference to a member variable (as per the example), or creating the instance when registering. For example
