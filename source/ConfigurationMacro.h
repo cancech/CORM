@@ -2703,7 +2703,7 @@ public: \
 
 // Macro which generates the code for registering beans
 #define BEANS(...) \
-public: \
+protected: \
 	void provideBeans() { \
 		PROCESS_PROVIDE_BEANS(__VA_ARGS__) \
 	} \
