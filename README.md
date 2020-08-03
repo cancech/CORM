@@ -198,6 +198,8 @@ public: \
 	}
 ```
 
+Note that up to 256 beans can be registered in a single Configuration through the means indicated here. 
+
 #### RESOURCES Macro
 
 ```C++
@@ -230,6 +232,7 @@ public: \
 		return resourceNames; \
 	}
 ```
+Note that up to 256 resources can be specified in a single Configuration in the manner as shown here.
 
 #### END_CONFIGURATION Macro
 
@@ -302,4 +305,78 @@ or within a Configuration file
 BEANS(
 	(BEAN, int, Example123Creator, "myNewBean")
 )
+```
+
+### Example
+
+To show how this all comes together a few Configuration files and a Context will be included as a contrived example. So to start with, we need some Configurations
+
+Configuration1: provides some ints. Note that this does not require any resources so the RESOURCES macro is absent
+```C++
+// Config which requires a single resource from ProviderManagerTestConfig and provides a single bean
+CONFIGURATION(Configuration1)
+
+	BEANS(
+		(BEAN, int, Example123Creator, "int1"),
+		(BEAN_INSTANCE, int, "int2", 456),
+		(BEAN_INSTANCE, int, "int3", 789)
+	)
+
+END_CONFIGURATION
+```
+
+Configuration2: takes ints to create a vector
+```C++
+// Config which requires a single resource from ProviderManagerTestConfig and provides a single bean
+CONFIGURATION(Configuration2)
+
+private:
+	std::vector<int> allInts;
+
+protected:
+	void postInit() {
+		// Called during initialization after resource are available
+		allInts.push_back(int1);
+		allInts.push_back(int2);
+		allInts.push_back(int3);
+	}
+
+	BEANS(
+		(BEAN_INSTANCE, std::vector<int>&, allInts)
+	)
+
+	RESOURCES(
+		(int, int1),
+		(int, int2),
+		(int, int3)
+	)
+
+END_CONFIGURATION
+```
+
+Configuration3: specifies Configuration1 and Configuation2 as dependencies, and adds some more ints to the vector
+```C++
+CONFIGURATION(Configuration3)
+
+DEPENDENCIES(Configuration1, Configuation2)
+
+protected:
+	void postInit() {
+		m_allInts.push_back(13579);
+		m_allInts.push_back(24680);
+	}
+
+	RESOURCES(
+		(std::vector<int>&, "allInts", m_allInts)
+	)
+	
+END_CONFIGURATION
+```
+
+Create a context which loads the above three Configurations
+```C++
+corm::Context context;
+context.registerConfiguration<Configuration3>();
+// load any other Configurations
+context.assemble();
 ```
