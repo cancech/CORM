@@ -36,6 +36,12 @@ BOOST_AUTO_TEST_CASE(Config_Dependency) {
 	context.assemble();
 }
 
+BOOST_AUTO_TEST_CASE(Config_Nested_Dependency) {
+	corm::Context context;
+	context.registerConfiguration<NestedConfig3>();
+	context.assemble();
+}
+
 BOOST_AUTO_TEST_CASE(Wrong_Bean_Type) {
 	corm::Context context;
 	context.registerConfiguration<DummyBeanProviderTestConfig>();

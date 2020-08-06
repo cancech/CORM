@@ -1,6 +1,8 @@
 #ifndef CONFIG_CONTEXTTESTDEPENDENCTCONFIGS_H_
 #define CONFIG_CONTEXTTESTDEPENDENCTCONFIGS_H_
 
+#include <cassert>
+
 #include "Configuration.h"
 #include "DummyClass.h"
 
@@ -46,6 +48,30 @@ END_CONFIGURATION
 CONFIGURATION(ConfigWithDeps)
 
 	DEPENDENCIES(ConsumerManagerTestConfig, ProviderConsumerManagerTestConfig, ProviderManagerTestConfig)
+
+	virtual void postInit() {
+		assert(var != NULL);
+		assert(var->getValue() == providerConsumerDummyFactory.getValue());
+	}
+
+	RESOURCES(
+		(DummyClass*, "providerManagerDummySingleton", var),
+		(DummyClass, providerConsumerDummyFactory)
+	)
+
+END_CONFIGURATION
+
+CONFIGURATION(NestedConfig1)
+	DEPENDENCIES(ConfigWithDeps)
+END_CONFIGURATION
+
+CONFIGURATION(NestedConfig2)
+	DEPENDENCIES(NestedConfig1)
+END_CONFIGURATION
+
+CONFIGURATION(NestedConfig3)
+
+	DEPENDENCIES(NestedConfig2)
 
 	virtual void postInit() {
 		assert(var != NULL);

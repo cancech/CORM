@@ -55,7 +55,9 @@
 
 
 // Macro for adding a single configuration dependency into the vector
-#define ADD_CONFIG_DEP(Config) deps.push_back(new corm::ConfigurationWrapper<Config>(manager));
+#define ADD_CONFIG_DEP(Config) myDeps.push_back(new corm::ConfigurationWrapper<Config>(manager)); \
+	nestedDeps = Config::getDependentConfigurations(manager); \
+	myDeps.insert(myDeps.end(), nestedDeps.begin(), nestedDeps.end());
 
 // Iterative macro to allow registering dependent configuration within a configuration
 #define CONFIG_DEP1(Config, ...) ADD_CONFIG_DEP(Config)
@@ -576,9 +578,10 @@
 // Add dependency configurations
 #define DEPENDENCIES(...) \
 	static std::vector<corm::ConfigurationWrapperInterface*> getDependentConfigurations(corm::BeanManager* manager) { \
-		std::vector<corm::ConfigurationWrapperInterface*> deps; \
+		std::vector<corm::ConfigurationWrapperInterface*> myDeps; \
+		std::vector<corm::ConfigurationWrapperInterface*> nestedDeps; \
 		CONFIG_DEP_ITEMS(__VA_ARGS__) \
-		return deps; \
+		return myDeps; \
 	}
 
 
