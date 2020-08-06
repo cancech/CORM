@@ -80,4 +80,16 @@ BOOST_AUTO_TEST_CASE(Circular_Config_Dependency) {
 	BOOST_REQUIRE_THROW(context.assemble(), corm::ConfigurationCycleException);
 }
 
+BOOST_AUTO_TEST_CASE(Beans_External_To_Context) {
+	std::string str = "Something or other";
+	corm::Context context;
+	context.registerConfiguration<SingleConfigMissingResourcesTestConfig, ProvideBean1Config>();
+	context.registerBeanInstance<int>("missingIntValue", 987);
+	context.registerBeanInstance<std::string&>("missingStringReference", str);
+	context.assemble();
+
+	int& intFromContext = context.getBean<int&>("DuplicateBean");
+	BOOST_CHECK_EQUAL(0, intFromContext);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

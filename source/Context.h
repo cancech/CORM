@@ -11,7 +11,7 @@ namespace corm {
  * Assembler for configurations, that will allow any number of configurations to be registered, and allow
  * them all to be assembled.
  */
-class Context {
+class Context: public BeanManager {
 
 public:
 	// DTOR
@@ -25,7 +25,7 @@ public:
 	 */
 	template<class Config>
 	void registerConfiguration() {
-		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>(&beanManager);
+		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>(this);
 		waitingConfigs.push_back(c);
 
 		// Register any dependencies
@@ -59,8 +59,6 @@ private:
 	std::vector<ConfigurationWrapperInterface*> waitingConfigs;
 	// vector of configurations which are processed and active
 	std::vector<BaseConfiguration*> activeConfigs;
-	// The bean manager that holds the beans for this context
-	BeanManager beanManager;
 
 	/*
 	 * Try to load the configuration that belongs to the wrapper.

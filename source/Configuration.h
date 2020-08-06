@@ -9,9 +9,10 @@
 
 namespace corm {
 
-class Context;
 class ConfigurationWrapperInterface;
-template<class Config> class ConfigurationWrapper;
+template<class Config>
+class ConfigurationWrapper;
+class Context;
 
 /*
  * Base configuration which is to be extended for the purpose of creating a new configuration.
