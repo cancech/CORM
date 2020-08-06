@@ -9,9 +9,9 @@
 
 namespace corm {
 
+class Context;
 class ConfigurationWrapperInterface;
-template<class Config>
-class ConfigurationWrapper;
+template<class Config> class ConfigurationWrapper;
 
 /*
  * Base configuration which is to be extended for the purpose of creating a new configuration.
@@ -34,10 +34,10 @@ public:
 	/*
 	 * Get a list of all dependent configurations of this configuration.
 	 *
-	 * @return std::vector containing the ConfigurationWrapperInterface pointers for all of of
-	 * 		   the dependent configurations.
+	 * @param context pointer to the Context where the dependent configurations should be
+	 *                  registered
 	 */
-	static std::vector<ConfigurationWrapperInterface*> getDependentConfigurations(BeanManager* manager);
+	static void registerDependentConfigurations(Context* context) {}
 
 	/*
 	 * Get a list of all resources that the configuration requires. This is expected to be overridden by the

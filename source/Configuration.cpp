@@ -13,13 +13,6 @@ std::string BaseConfiguration::getName() {
 }
 
 /*
- * Get the default dependent configs
- */
-std::vector<ConfigurationWrapperInterface*> BaseConfiguration::getDependentConfigurations(BeanManager* manager) {
-	return std::vector<ConfigurationWrapperInterface*>();
-}
-
-/*
  * Get the default resource names
  */
 const std::vector<std::string>& BaseConfiguration::getResourceNames() {

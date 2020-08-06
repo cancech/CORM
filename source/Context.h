@@ -29,9 +29,7 @@ public:
 		waitingConfigs.push_back(c);
 
 		// Register any dependencies
-		for(ConfigurationWrapperInterface* i: Config::getDependentConfigurations(&beanManager)) {
-			waitingConfigs.push_back(i);
-		}
+		Config::registerDependentConfigurations(this);
 	}
 
 	/*
