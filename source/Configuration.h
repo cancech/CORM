@@ -5,6 +5,7 @@
 
 #include "ConfigurationMacro.h"
 #include "BeanManager.h"
+#include "exception/InvalidBeanException.h"
 
 namespace corm {
 

@@ -578,9 +578,13 @@
 // Add dependency configurations
 #define DEPENDENCIES(...) \
 	static std::vector<corm::ConfigurationWrapperInterface*> getDependentConfigurations(corm::BeanManager* manager) { \
+		static bool isLoading = false; \
+		if (isLoading) return std::vector<corm::ConfigurationWrapperInterface*>(); \
+		isLoading = true; \
 		std::vector<corm::ConfigurationWrapperInterface*> myDeps; \
 		std::vector<corm::ConfigurationWrapperInterface*> nestedDeps; \
 		CONFIG_DEP_ITEMS(__VA_ARGS__) \
+		isLoading = false; \
 		return myDeps; \
 	}
 
