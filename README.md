@@ -21,3 +21,18 @@ The source is provided as a Eclipse CDT project, with four different Build Confi
 * Test - build the library with the included unit tests (generates an application that can be executed to run all of the unit tests)
 * Test_Autoregistration - build the library with the included unit test (as per Test), with the ENABLE_BEAN_AUTOREGISTRATION flag enabled (allow testing the auto-registration capabilities)
 
+To allow compiling outside of Eclipse a cmake configuration is also provided. To compile using cmake the following must be performed (note that steps assume a Unix based environment.
+
+```
+cd <git_dir>
+mkdir build
+cd build
+cmake ../
+make
+```
+
+This will compile the library, as well as the included unit tests. The following flags can be used with cmake to customize the build:
+
+* _-DCMAKE_BUILD_TYPE=[Release/Debug]_ - make the build using release or debug options
+* _-DUNIT_TEST=ON_ - include the unit tests in the build (by default they are not compiled)
+* _-DENABLE_AUTOREGISTRATION=ON_ - compile the unit tests with the Bean Autoregistration capabilities enabled
