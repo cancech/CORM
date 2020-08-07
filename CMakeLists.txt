@@ -13,6 +13,9 @@ add_library(corm SHARED
 target_compile_options(corm PUBLIC -Wall -c -fmessage-length=0 -fPIC)
 
 # Add the unit tests
-add_subdirectory(test)
+option(UNIT_TEST "Enable the unit tests" OFF)
+if(UNIT_TEST)
+	add_subdirectory(test)
+ENDIF(UNIT_TEST)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/lib)
