@@ -4,7 +4,7 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "BeanCreator.h"
+#include "corm/BeanCreator.h"
 
 #include "DummyClass.h"
 

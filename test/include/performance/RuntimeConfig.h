@@ -1,7 +1,7 @@
 #ifndef PERFORMANCE_RUNTIMECONFIG_H_
 #define PERFORMANCE_RUNTIMECONFIG_H_
 
-#include "Configuration.h"
+#include "corm/Configuration.h"
 #include "DummyClass.h"
 
 #include <cassert>

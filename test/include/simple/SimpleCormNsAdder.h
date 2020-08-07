@@ -1,29 +1,31 @@
-#ifndef SIMPLECORMADDER_H_
-#define SIMPLECORMADDER_H_
+#ifndef SIMPLECORMNSADDER_H_
+#define SIMPLECORMNSADDER_H_
 
 #include <iostream>
 
-#include "simple/SimpleCorm.h"
+#include "corm/simple/SimpleCorm.h"
 
 // The externs have to be here in order to allow compilation to complete.
 // Only way to remove this need is to create a separate CORM preprocessor
 // which would generate these lines.
-BEAN(int, intBean1);
-BEAN(int, intBean2);
+namespace testing {
+	BEAN(int, nsIntBean1);
+	BEAN(int, nsIntBean2);
+}
 
 /*
  * Test class to be used to verify that a class can pull in beans as a resource
  */
-class SimpleCormAdder {
+class SimpleCormNsAdder {
 public:
-	int add() { return intBean1 + intBean2; }
+	int add() { return nsIntBean1 + nsIntBean2; }
 
 private:
 	// The members that are initialized with a resource
-	RESOURCE_MEMBER(int, intBean1);
-	RESOURCE_MEMBER(int, intBean2);
+	RESOURCE_MEMBER_NS(int, testing, nsIntBean1);
+	RESOURCE_MEMBER_NS(int, testing, nsIntBean2);
 };
 
 
 
-#endif /* SIMPLECORMADDER_H_ */
+#endif /* SIMPLECORMNSADDER_H_ */

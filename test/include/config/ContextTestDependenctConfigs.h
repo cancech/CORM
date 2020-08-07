@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-#include "Configuration.h"
+#include "corm/Configuration.h"
 #include "DummyClass.h"
 
 

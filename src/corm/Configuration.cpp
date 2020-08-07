@@ -1,4 +1,4 @@
-#include "Configuration.h"
+#include "corm/Configuration.h"
 
 namespace corm {
 

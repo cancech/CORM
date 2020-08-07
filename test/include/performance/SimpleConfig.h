@@ -9,7 +9,7 @@
 #undef RESOURCE
 #endif
 
-#include "simple/SimpleCorm.h"
+#include "corm/simple/SimpleCorm.h"
 #include "DummyClass.h"
 #include <cassert>
 

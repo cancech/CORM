@@ -4,7 +4,7 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "BeanProvider.h"
+#include "corm/BeanProvider.h"
 #include "DummyClass.h"
 
 struct BeanProviderTestCreator {

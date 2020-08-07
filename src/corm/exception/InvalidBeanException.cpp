@@ -1,5 +1,5 @@
-#include "InvalidBeanException.h"
-#include "Configuration.h"
+#include "corm/exception/InvalidBeanException.h"
+#include "corm/Configuration.h"
 
 #include <sstream>
 

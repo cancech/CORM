@@ -4,7 +4,7 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "Context.h"
+#include "corm/Context.h"
 
 #include "config/ContextTestConfigs.h"
 #include "config/ContextTestBeanMismatchConfigs.h"

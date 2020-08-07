@@ -1,4 +1,4 @@
-#include "BeanManager.h"
+#include "corm/BeanManager.h"
 
 namespace corm {
 
