@@ -34,4 +34,5 @@ make
 This will compile the library, as well as the included unit tests. The following flags can be used with cmake to customize the build:
 
 * _-DCMAKE_BUILD_TYPE=[Release/Debug]_ - make the build using release or debug options
+* _-DUNIT_TEST=ON_ - include the unit tests in the build (by default they are not compiled)
 * _-DENABLE_AUTOREGISTRATION=ON_ - compile the unit tests with the Bean Autoregistration capabilities enabled
