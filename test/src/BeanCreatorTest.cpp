@@ -15,12 +15,12 @@ BOOST_AUTO_TEST_CASE(Singleton_Scalar_Creator) {
 	corm::SingletonBeanCreator<DummyClass&> creator;
 
 	corm::ValueWrapper<DummyClass&>* wrapper = creator.create();
-	DummyClass& dummy1 = wrapper->value;
+	DummyClass& dummy1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy1.getValue());
 
 	wrapper = creator.create();
-	DummyClass& dummy2 = wrapper->value;
+	DummyClass& dummy2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy2.getValue());
 
@@ -36,12 +36,12 @@ BOOST_AUTO_TEST_CASE(Singleton_Pointer_Creator) {
 	corm::SingletonBeanCreator<DummyClass*> creator;
 
 	corm::ValueWrapper<DummyClass*>* wrapper = creator.create();
-	DummyClass* dummy1 = wrapper->value;
+	DummyClass* dummy1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy1->getValue());
 
 	wrapper = creator.create();
-	DummyClass* dummy2 = wrapper->value;
+	DummyClass* dummy2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy2->getValue());
 
@@ -57,12 +57,12 @@ BOOST_AUTO_TEST_CASE(Factory_Scalar_Creator) {
 	corm::FactoryBeanCreator<DummyClass> creator;
 
 	corm::ValueWrapper<DummyClass>* wrapper = creator.create();
-	DummyClass dummy1 = wrapper->value;
+	DummyClass dummy1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy1.getValue());
 
 	wrapper = creator.create();
-	DummyClass dummy2 = wrapper->value;
+	DummyClass dummy2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy2.getValue());
 
@@ -77,12 +77,12 @@ BOOST_AUTO_TEST_CASE(Factory_Pointer_Creator) {
 	corm::FactoryBeanCreator<DummyClass*> creator;
 
 	corm::ValueWrapper<DummyClass*>* wrapper = creator.create();
-	DummyClass* dummy1 = wrapper->value;
+	DummyClass* dummy1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy1->getValue());
 
 	wrapper = creator.create();
-	DummyClass* dummy2 = wrapper->value;
+	DummyClass* dummy2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, dummy2->getValue());
 
@@ -101,13 +101,13 @@ BOOST_AUTO_TEST_CASE(Smart_Singleton_Creator) {
 
 	// Get one instance
 	corm::ValueWrapper<std::shared_ptr<DummyClass>>* wrapper = creator.create();
-	std::shared_ptr<DummyClass> bean1 = wrapper->value;
+	std::shared_ptr<DummyClass> bean1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, bean1->getValue());
 
 	// Get a second instance
 	wrapper = creator.create();
-	std::shared_ptr<DummyClass> bean2 = wrapper->value;
+	std::shared_ptr<DummyClass> bean2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, bean2->getValue());
 
@@ -121,13 +121,13 @@ BOOST_AUTO_TEST_CASE(Smart_Factory_Creator) {
 
 	// Get one instance
 	corm::ValueWrapper<std::shared_ptr<DummyClass>>* wrapper = creator.create();
-	std::shared_ptr<DummyClass> bean1 = wrapper->value;
+	std::shared_ptr<DummyClass> bean1 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, bean1->getValue());
 
 	// Get a second instance
 	wrapper = creator.create();
-	std::shared_ptr<DummyClass> bean2 = wrapper->value;
+	std::shared_ptr<DummyClass> bean2 = wrapper->m_value;
 	delete(wrapper);
 	BOOST_CHECK_EQUAL(0, bean2->getValue());
 

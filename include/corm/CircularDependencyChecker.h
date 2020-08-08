@@ -42,11 +42,11 @@ public:
 
 private:
 	// Map of all beans to the configuration that provides it
-	std::map<std::string, std::string> beanSource;
+	std::map<std::string, std::string> m_beanSource;
 	// Map of configuration names to the resources they require
-	std::map<std::string, std::vector<std::string>> configResources;
+	std::map<std::string, std::vector<std::string>> m_configResources;
 	// Vector acting as a stack to determine whether a cycle is present
-	std::vector<std::string> cycle;
+	std::vector<std::string> m_cycle;
 
 	/*
 	 * Check all of the resources belonging to the configuration file, to determine whether a cycle is present.

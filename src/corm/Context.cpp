@@ -5,11 +5,11 @@ namespace corm {
 // DTOR
 Context::~Context() {
 	// Cleanup the configs which are still waiting
-	for (ConfigurationWrapperInterface* i: waitingConfigs)
+	for (ConfigurationWrapperInterface* i: m_waitingConfigs)
 		delete(i);
 
 	// Clean up the configs which have already been processed
-	for (BaseConfiguration* c: activeConfigs)
+	for (BaseConfiguration* c: m_activeConfigs)
 		delete(c);
 }
 
@@ -24,14 +24,14 @@ void Context::assemble() {
 		configProcessed = false;
 
 		// Iterate through all registered configs and try to build and initialize them
-		std::vector<ConfigurationWrapperInterface*>::iterator it = waitingConfigs.begin();
-		while (it != waitingConfigs.end()) {
+		std::vector<ConfigurationWrapperInterface*>::iterator it = m_waitingConfigs.begin();
+		while (it != m_waitingConfigs.end()) {
 			// Try to load the configuration
 			if (loadConfig(*it)) {
 				// Success! Clean up the wrapper for the loaded config
 				configProcessed = true;
 				delete(*it);
-				it = waitingConfigs.erase(it);
+				it = m_waitingConfigs.erase(it);
 			} else
 				++it;
 
@@ -61,7 +61,7 @@ bool Context::loadConfig(ConfigurationWrapperInterface* wrapper) {
 	}
 
 	// Now that the configuration is created and initialized, store it
-	activeConfigs.push_back(config);
+	m_activeConfigs.push_back(config);
 	return true;
 }
 
@@ -84,11 +84,11 @@ void checkForCycle(std::vector<ConfigurationWrapperInterface*>& configs) {
  * Sanity check of the context
  */
 void Context::verifyContext() {
-	if (!waitingConfigs.empty()) {
+	if (!m_waitingConfigs.empty()) {
 		// Check whether a cycle is present and preventing the assembly of the context
-		checkForCycle(waitingConfigs);
+		checkForCycle(m_waitingConfigs);
 		// If not, just throw the exception that cannot initialize
-		throw ConfigurationInitializationException(waitingConfigs);
+		throw ConfigurationInitializationException(m_waitingConfigs);
 	}
 }
 

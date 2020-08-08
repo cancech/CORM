@@ -9,9 +9,9 @@ namespace corm {
  */
 void CircularDependencyChecker::add(std::string name, std::vector<std::string> resources,
 		std::vector<std::string> beans) {
-	configResources[name] = resources;
+	m_configResources[name] = resources;
 	for(std::string s: beans)
-		beanSource[s] = name;
+		m_beanSource[s] = name;
 }
 
 /*
@@ -19,7 +19,7 @@ void CircularDependencyChecker::add(std::string name, std::vector<std::string> r
  */
 bool CircularDependencyChecker::checkForCycle() {
 	// Iterate over each configuration
-	for (std::pair<std::string,  std::vector<std::string>> p: configResources) {
+	for (std::pair<std::string,  std::vector<std::string>> p: m_configResources) {
 		// Check each configuration to see whether or not it is part of a cycle.
 		if (checkAllResources(p.first)) {
 			minimizeCycle();
@@ -34,15 +34,15 @@ bool CircularDependencyChecker::checkForCycle() {
  * Minimize the reported cycle the smallest it can be.
  */
 void CircularDependencyChecker::minimizeCycle() {
-	auto start = std::find(cycle.begin(), cycle.end(), cycle[cycle.size() - 1]);
-	cycle.erase(cycle.begin(), start);
+	auto start = std::find(m_cycle.begin(), m_cycle.end(), m_cycle[m_cycle.size() - 1]);
+	m_cycle.erase(m_cycle.begin(), start);
 }
 
 /*
  * Get the detected cycle.
  */
 const std::vector<std::string>& CircularDependencyChecker::getCycle() {
-	return cycle;
+	return m_cycle;
 }
 
 /*
@@ -50,11 +50,11 @@ const std::vector<std::string>& CircularDependencyChecker::getCycle() {
  */
 bool CircularDependencyChecker::checkAllResources(std::string configName) {
 	// Sanity check, make sure that this configuration has been registered
-	if (!configResources.count(configName))
+	if (!m_configResources.count(configName))
 		return false;
 
 	// Check all of the resources that the configuration requires
-	std::vector<std::string>& resources = configResources[configName];
+	std::vector<std::string>& resources = m_configResources[configName];
 	for (std::string res: resources) {
 		// Check if a cycle was found
 		if (followResource(configName, res))
@@ -71,21 +71,21 @@ bool CircularDependencyChecker::checkAllResources(std::string configName) {
 bool CircularDependencyChecker::followResource(std::string configName, std::string resourceName) {
 	// Build the display name and check if it has been seen.
 	std::string compoundName = configName + "::" + resourceName;
-	bool hasCycle = std::find(cycle.begin(), cycle.end(), compoundName) != cycle.end();
-	cycle.push_back(compoundName);
+	bool hasCycle = std::find(m_cycle.begin(), m_cycle.end(), compoundName) != m_cycle.end();
+	m_cycle.push_back(compoundName);
 
 	// Check if a cycle has been detected (the display name is already present in the vector
 	if (hasCycle)
 		return true;
 
 	// Follow the source of the resource
-	if (beanSource.count(resourceName)) {
-		if (checkAllResources(beanSource[resourceName]))
+	if (m_beanSource.count(resourceName)) {
+		if (checkAllResources(m_beanSource[resourceName]))
 			return true;
 	}
 
 	// No cycle detected
-	cycle.pop_back();
+	m_cycle.pop_back();
 	return false;
 }
 

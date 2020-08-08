@@ -49,7 +49,7 @@ public:
 	template<typename Type, class Creator = SingletonBeanCreator<Type>>
 	void registerBean(std::string name) {
 		verifyCanAddBean(name);
-		repo[name] = new BeanCreatorProvider<Type, Creator>();
+		m_repo[name] = new BeanCreatorProvider<Type, Creator>();
 	}
 
 	/*
@@ -69,7 +69,7 @@ public:
 	template<typename Type>
 	void registerBeanInstance(std::string name, Type instance) {
 		verifyCanAddBean(name);
-		repo[name] = new BeanInstanceProvider<Type>(instance);
+		m_repo[name] = new BeanInstanceProvider<Type>(instance);
 	}
 
 	/*
@@ -98,23 +98,23 @@ public:
 		}
 
 		// check for cycles
-		bool hasCycle = std::find(beanNameStack.begin(), beanNameStack.end(), name) != beanNameStack.end();
-		beanNameStack.push_back(name);
+		bool hasCycle = std::find(m_beanNameStack.begin(), m_beanNameStack.end(), name) != m_beanNameStack.end();
+		m_beanNameStack.push_back(name);
 		if (hasCycle)
-			throw BeanDependencyCycleException(beanNameStack);
+			throw BeanDependencyCycleException(m_beanNameStack);
 
-		BaseProvider *baseProvider = repo[name];
+		BaseProvider *baseProvider = m_repo[name];
 		TypeProvider<Type> *typeProvider = dynamic_cast<TypeProvider<Type>*>(baseProvider);
 
 		if (typeProvider) {
 			Type beanToReturn = typeProvider->getBean();
 			// Only pop the bean from the list if it has been retrieved
-			beanNameStack.pop_back();
+			m_beanNameStack.pop_back();
 			return beanToReturn;
 		}
 
 		// Do not hold on to invalid bean names in the call stack
-		beanNameStack.pop_back();
+		m_beanNameStack.pop_back();
 		throw InvalidBeanTypeException(name, typeid(Type).name(), baseProvider->getType());
 	}
 
@@ -129,9 +129,9 @@ public:
 
 private:
 	// Repository of all registered beans
-	std::map<std::string, BaseProvider*> repo;
+	std::map<std::string, BaseProvider*> m_repo;
 	// Stack for "getBean" calls when there is a chained situation. Used to detect cycles
-	std::vector<std::string> beanNameStack;
+	std::vector<std::string> m_beanNameStack;
 
 	/*
 	 * Convenience method to check if a bean of the given name can be added to the manager.

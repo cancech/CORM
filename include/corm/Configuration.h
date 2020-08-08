@@ -136,7 +136,7 @@ class ConfigurationWrapper: public ConfigurationWrapperInterface {
 public:
 
 	// CTOR
-	ConfigurationWrapper(BeanManager* manager): beanManager(manager) {
+	ConfigurationWrapper(BeanManager* manager): m_beanManager(manager) {
 		// Automatically register resources to make sure that the waitingResources is appropriately populated
 		registerResources();
 	}
@@ -154,9 +154,9 @@ public:
 	 * @return true if there are no more resources the configuration is waiting on
 	 */
 	virtual bool areResourcesSatisfied() {
-		waitingResources.erase(std::remove_if(waitingResources.begin(), waitingResources.end(),
-				[this](std::string s) { return beanManager->containsBean(s); }), waitingResources.end());
-		return waitingResources.empty();
+		m_waitingResources.erase(std::remove_if(m_waitingResources.begin(), m_waitingResources.end(),
+				[this](std::string s) { return m_beanManager->containsBean(s); }), m_waitingResources.end());
+		return m_waitingResources.empty();
 	}
 
 	/*
@@ -168,15 +168,15 @@ public:
 	 */
 	virtual BaseConfiguration* buildConfig() {
 		if (!areResourcesSatisfied())
-			throw ConfigurationMissingResourcesException(getName(), waitingResources);
-		return new Config(beanManager);
+			throw ConfigurationMissingResourcesException(getName(), m_waitingResources);
+		return new Config(m_beanManager);
 	}
 
 	/*
 	 * Get the vector of waiting resources.
 	 */
 	virtual const std::vector<std::string>& getWaitingResources() const {
-		return waitingResources;
+		return m_waitingResources;
 	}
 
 	/*
@@ -188,9 +188,9 @@ public:
 
 private:
 	// Vector of the names of resources that the configuration is still waiting on
-	std::vector<std::string> waitingResources;
+	std::vector<std::string> m_waitingResources;
 	// The bean manager that holds the beans for this context
-	BeanManager* beanManager;
+	BeanManager* m_beanManager;
 
 
 	/*
@@ -198,7 +198,7 @@ private:
 	 */
 	void registerResources() {
 		const std::vector<std::string> allResources = Config::getResourceNames();
-		waitingResources.assign(allResources.begin(), allResources.end());
+		m_waitingResources.assign(allResources.begin(), allResources.end());
 	}
 };
 

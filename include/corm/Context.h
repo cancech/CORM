@@ -26,7 +26,7 @@ public:
 	template<class Config>
 	void registerConfiguration() {
 		ConfigurationWrapper<Config>* c = new ConfigurationWrapper<Config>(this);
-		waitingConfigs.push_back(c);
+		m_waitingConfigs.push_back(c);
 
 		// Register any dependencies
 		Config::registerDependentConfigurations(this);
@@ -56,9 +56,9 @@ public:
 
 private:
 	// vector of configurations which are still waiting to be processed
-	std::vector<ConfigurationWrapperInterface*> waitingConfigs;
+	std::vector<ConfigurationWrapperInterface*> m_waitingConfigs;
 	// vector of configurations which are processed and active
-	std::vector<BaseConfiguration*> activeConfigs;
+	std::vector<BaseConfiguration*> m_activeConfigs;
 
 	/*
 	 * Try to load the configuration that belongs to the wrapper.

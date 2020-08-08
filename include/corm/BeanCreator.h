@@ -16,10 +16,10 @@ namespace corm {
 template<typename T>
 struct ValueWrapper {
 
-	T value;
+	T m_value;
 
 	ValueWrapper(T val) :
-			value(val) {
+			m_value(val) {
 	}
 };
 
@@ -35,11 +35,11 @@ template<typename T>
 struct SingletonBeanCreator {
 #ifdef ENABLE_BEAN_AUTOREGISTRATION
 	ValueWrapper<T>* create() {
-		return new ValueWrapper<T>(instance);
+		return new ValueWrapper<T>(m_instance);
 	}
 
 private:
-	T instance;
+	T m_instance;
 #endif
 };
 
@@ -50,12 +50,12 @@ template<typename T>
 struct SingletonBeanCreator<T&> {
 
 	ValueWrapper<T&>* create() {
-		return new ValueWrapper<T&>(instance);
+		return new ValueWrapper<T&>(m_instance);
 	}
 
 private:
 	// The managed singleton instance
-	T instance = T();
+	T m_instance = T();
 };
 
 /*
@@ -64,21 +64,21 @@ private:
 template<typename T>
 struct SingletonBeanCreator<T*> {
 	virtual ~SingletonBeanCreator() {
-		if (instance != NULL)
-			delete(instance);
+		if (m_instance != NULL)
+			delete(m_instance);
 	}
 
 	virtual ValueWrapper<T*>* create() {
 		// Delay creation until it is actually needed
-		if (instance == NULL)
-			instance = new T();
+		if (m_instance == NULL)
+			m_instance = new T();
 
-		return new ValueWrapper<T*>(instance);
+		return new ValueWrapper<T*>(m_instance);
 	}
 
 private:
 	// The managed singleton instance
-	T *instance = NULL;
+	T *m_instance = NULL;
 };
 
 /*

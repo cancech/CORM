@@ -56,15 +56,15 @@ public:
 		// Bit of a roundabout way to do this, but required in order to get around the limitations of C++.
 		// Retrieve the bean from the interim ValueWrapper, and make sure that the ValueWrapper is deallocated
 		// to avoid leaking memory.
-		T bean = beanWrapper->value;
-		delete(beanWrapper);
-		beanWrapper = NULL;
+		T bean = m_beanWrapper->m_value;
+		delete(m_beanWrapper);
+		m_beanWrapper = NULL;
 		return bean;
 	}
 
 protected:
 	// This is an interim storage vehicle where the bean created by the subclass is to be stored.
-	ValueWrapper<T>* beanWrapper = NULL;
+	ValueWrapper<T>* m_beanWrapper = NULL;
 
 	/*
 	 * Provide the bean by storing it within the interim ValueWrapper beanWrapper. Note that this *must* be allocated
@@ -83,13 +83,13 @@ class BeanCreatorProvider: public TypeProvider<T> {
 
 private:
 	// The creator for determining how to create bean instances
-	Creator creator;
+	Creator m_creator;
 
 	/*
 	 * The creator creates the beanWrapper and store the resulting beanWrapper in the interim beanWrapper instance field container
 	 */
 	void provideBean() {
-		TypeProvider<T>::beanWrapper = creator.create();
+		TypeProvider<T>::m_beanWrapper = m_creator.create();
 	}
 };
 
@@ -114,7 +114,7 @@ private:
 	 * Provides the instance by passing it to interim beanWrapper instance field container
 	 */
 	void provideBean() {
-		TypeProvider<T>::beanWrapper = new ValueWrapper<T>(m_instance);
+		TypeProvider<T>::m_beanWrapper = new ValueWrapper<T>(m_instance);
 	}
 };
 
